@@ -4,7 +4,6 @@ namespace rosas\dam\gql\interfaces;
 
 use Craft;
 use GraphQL\Type\Definition\Type;
-// use craft\gql\interfaces\Element as ElementInterface;
 use craft\gql\interfaces\elements\Asset as AssetInterface;
 use craft\gql\TypeManager;
 use craft\gql\GqlEntityRegistry;
@@ -30,7 +29,7 @@ class DAMAssetInterface extends AssetInterface {
         $type = GqlEntityRegistry::createEntity(self::class, new InterfaceType([
             'name' => static::getName(),
             'fields' => self::class . '::getFieldDefinitions',
-            'description' => 'This is the interface implemented by all assets.',
+            'description' => 'This is the interface implemented by all DAM assets.',
             'resolveType' => function($value) {
                 return GqlEntityRegistry::getEntity(DAMAssetGenerator::getName());
             }

@@ -10,13 +10,6 @@ use craft\helpers\Json;
 use GraphQL\Type\Definition\ResolveInfo;
 use rosas\dam\db\AssetMetadata;
 
-/**
- * Class SeomaticType
- *
- * @author    nystudio107
- * @package   Seomatic
- * @since     3.2.8
- */
 class DAMAssetType extends ObjectType {
     /**
      * @inheritdoc
@@ -38,21 +31,21 @@ class DAMAssetType extends ObjectType {
         } else if($resolveInfo->fieldName == "damMetadata"){
 	        $metadata = $this->getAssetMetadataByAssetId($source->id);
             return $metadata;
-	} else {
-	    try {
-            $resolvedValue = $source[$resolveInfo->fieldName];
-            return $resolvedValue;
-	    } catch (Exception $e) {
-	        return null;
-	    }
-	}
+        } else {
+            try {
+                $resolvedValue = $source[$resolveInfo->fieldName];
+                return $resolvedValue;
+            } catch (Exception $e) {
+                return null;
+            }
+        }
 
     }
 
     public static function getAssetMetadataByAssetId($assetId) {
         $rows = AssetMetadata::find()
-        ->where(['"assetId"' => $assetId])
-        ->all();
+                                ->where(['"assetId"' => $assetId])
+                                ->all();
 
         $res = [];
         $currentId = 0;
