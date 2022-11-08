@@ -107,7 +107,7 @@ class Install extends Migration
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'uid' => $this->uid(),
-                // Custom columns in the table
+                    // Custom columns in the table
                     'assetId' => $this->integer()->notNull(),
                     'dam_meta_key' => $this->string(255)->notNull(),
                     'dam_meta_value' => $this->string(1000)->notNull()

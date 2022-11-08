@@ -31,8 +31,7 @@ class DAMAssetResolver extends AssetResolver {
         // If this is the beginning of a resolver chain, start fresh
         if ($source === null) {
             $query = AssetElement::find(); // From this plugin's overriden Asset class
-            // If not, get the prepared element query
-        } else {
+        } else { // If not, get the prepared element query
             $elementRow = AssetMetadata::find()
                 ->where(["dam_meta_value" => $source->id, "dam_meta_key" => 'elementId'])
                 ->one();

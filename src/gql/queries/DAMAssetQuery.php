@@ -18,13 +18,11 @@ class DAMAssetQuery extends Query {
         }
 
         return [
-            // 'enhancedAssetsQuery' => [
                 'type' => Type::listOf(DAMAssetInterface::getType()),
                 'args' => AssetArguments::getArguments(),
                 'resolve' => DAMAssetResolver::class . '::resolve',
-                'description' => 'This query is used to query for entries.',
+                'description' => 'This query is used to query for DAM assets.',
                 'complexity' => GqlHelper::relatedArgumentComplexity(),
-            // ]
         ];
     }
 }

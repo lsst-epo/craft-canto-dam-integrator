@@ -11,13 +11,16 @@ use craft\helpers\Json;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\models\VolumeFolder;
-use craft\db\Query;
-use rosas\dam\elements\db\DAMAssetQuery;
 use \rosas\dam\Plugin;
+
+// DB access
+use rosas\dam\records\VolumeFolders;
 use rosas\dam\db\AssetMetadata;
+use rosas\dam\elements\db\DAMAssetQuery;
 
 class Assets extends Component
 {
+    private static string $FILENAME_URL_PREFIX = "https://rubin.canto.com/direct/";
 
     private $authToken;
 
@@ -52,9 +55,8 @@ class Assets extends Component
             try {
                 $this->authToken = $this->getAuthToken();
                 if($this->authToken != null && !empty($this->authToken)) {
-		    $this->assetMetadata = $this->getAssetMetadata($damId);
-
-		    $this->assetMetadata["epo_etc"]["elementId"] = $elementId;
+                    $this->assetMetadata = $this->getAssetMetadata($damId);
+                    $this->assetMetadata["epo_etc"]["elementId"] = $elementId;
                     $this->assetMetadata["epo_etc"]["fieldId"] = $fieldId;
                     if(in_array('errorMessage', $this->assetMetadata)) {
                         return [
@@ -81,7 +83,6 @@ class Assets extends Component
                     ]
                 ];
             }
-
         } else {
             return [
                 "status" => "error",
@@ -98,16 +99,10 @@ class Assets extends Component
     }
 
     private function _propagateFolders($path, $damVolId) {
-        $db = Craft::$app->getDb();
         $pathArr = explode('/', $path);
         $parentId = null;
         foreach($pathArr as $folderName) {
-            $query = new Query;
-            $result = $query->select('id, parentId')
-                        ->from('volumefolders')
-                        ->where("name = :name", [ ":name" => $folderName])
-                        ->one();
-            
+            $result = VolumeFolders::getIdsByFolderName($folderName);
             $newFolder = new VolumeFolder();
 
             // Determine parentId for folder
@@ -124,35 +119,22 @@ class Assets extends Component
             $newFolder->name = $folderName;
             $newFolder->volumeId = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = Plugin::getInstance()->getSettings()->damVolume)["id"];
             $parentId = AssetsService::storeFolderRecord($newFolder);
-
-            $newFolderRecord = $query->select('id, parentId')
-                                    ->from('volumefolders')
-                                    ->where("name = :name", [ ":name" => $folderName])
-                                    ->one();
-
+            $newFolderRecord = VolumeFolders::getIdsByFolderName($folderName);
             $parentId = $newFolderRecord["id"];
-
         }
 
         return $parentId;
-
     }
 
     private function saveAssetMetadata() {
         $damVolume = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = Plugin::getInstance()->getSettings()->damVolume);
+        $damVolResult = VolumeFolders::getIdsByFolderName($damVolume["name"]);
 
-        $query = new Query;
-        $damVolResult = $query->select('id, parentId')
-                            ->from('volumefolders')
-                            ->where("name = :name", [ ":name" => $damVolume["name"]])
-                            ->one();
-
-	//$newAsset->title = "rosas";
         $newAsset = new Asset();
         $newAsset->avoidFilenameConflicts = true;
         $newAsset->setScenario(Asset::SCENARIO_CREATE);
         $filename = strtolower($this->assetMetadata["url"]["directUrlOriginal"]);
-        $newAsset->filename = str_replace("https://rubin.canto.com/direct/", "", $filename);
+        $newAsset->filename = str_replace($FILENAME_URL_PREFIX, "", $filename);
         $newAsset->kind = "image";
         $newAsset->setHeight($this->assetMetadata["height"]);
         $newAsset->setWidth($this->assetMetadata["width"]);
@@ -161,7 +143,6 @@ class Assets extends Component
         if(array_key_exists("relatedAlbums", $this->assetMetadata) &&
            count($this->assetMetadata["relatedAlbums"]) > 0 &&
            array_key_exists("namePath", $this->assetMetadata["relatedAlbums"][0])) {
-            Craft::info("About to propagate folders", "UDAMI");
             $newAsset->folderId = $this->_propagateFolders($this->assetMetadata["relatedAlbums"][0]["namePath"], $damVolResult["id"]);
         } else {
             $newAsset->folderId = $damVolResult["id"];
@@ -172,10 +153,6 @@ class Assets extends Component
         $now = new DateTime();
         $newAsset->dateModified = $now->format('Y-m-d H:i:s');
         $elements = new Elements();
-        Craft::info("About to save element", "UDAMI");
-
-	Craft::info("about to log assetMetadata", "potter");
-	Craft::info(Json::encode($this->assetMetadata), "potter");
 	
         $success = $elements->saveElement($newAsset, false, true, true, $this->assetMetadata);
 
@@ -210,8 +187,6 @@ class Assets extends Component
                     ->one();
                 if($rows != null && array_key_exists("dam_meta_value", $rows)) {
                     return str_replace('"', '', $rows['dam_meta_value']);
-                } else {
-                    "";
                 }
             }
         }
