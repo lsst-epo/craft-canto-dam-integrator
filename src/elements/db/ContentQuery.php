@@ -4,6 +4,9 @@ namespace rosas\dam\elements\db;
 
 use Craft;
 use craft\helpers\Json;
+use craft\db\Query;
+use craft\db\Table;
+use craft\helpers\Db;
 
 class ContentQuery {
 
@@ -47,5 +50,14 @@ class ContentQuery {
         return $success;
     
     }
+
+    public function getDamAssetIdByElementId($elementId, $col_name) {
+        return (new Query())
+                        ->select([$col_name])
+                        ->from([Table::CONTENT])
+                        ->where(Db::parseParam('elementId', $elementId))
+                        ->column();        
+    }
+    
 }
 

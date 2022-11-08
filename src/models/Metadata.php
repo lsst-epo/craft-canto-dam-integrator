@@ -14,7 +14,7 @@ class Metadata extends ObjectType {
 
     public $metadataValue;
 
-    public $description = "Something something metadata";
+    public $description = "Key/value metadata for a DAM asset";
 
     /**
      * @inheritdoc

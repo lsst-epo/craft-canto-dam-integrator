@@ -15,10 +15,10 @@ use craft\helpers\Gql as GqlHelper;
 use craft\services\Gql as GqlService;
 use GraphQL\Type\Definition\Type;
 use craft\services\Sections;
-use craft\db\Query;
-use craft\db\Table;
 use craft\helpers\ElementHelper;
-use craft\helpers\Db;
+
+// DB access
+use rosas\elements\db\ContentQuery;
 
 class DAMAsset extends AssetField {
 
@@ -102,12 +102,7 @@ class DAMAsset extends AssetField {
     public static function getDamAssetId($elementId) {
         $field = Craft::$app->fields->getFieldByHandle("damAsset");
 	    $col_name = ElementHelper::fieldColumnFromField($field);
-
-        $damAssetId = (new Query())
-                ->select([$col_name])
-                ->from([Table::CONTENT])
-                ->where(Db::parseParam('elementId', $elementId))
-		        ->column();
+        $damAssetId = ContentQuery::getDamAssetIdByElementId($elementId, $col_name);
 
         return $damAssetId;
     }

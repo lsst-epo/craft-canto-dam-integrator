@@ -4,7 +4,6 @@ namespace rosas\dam\models;
 
 use Craft;
 use craft\base\Model;
-// use craft\helpers\App;
 
 class Settings extends Model
 {
@@ -25,7 +24,6 @@ class Settings extends Model
     public function __construct(array $config = []) {
         parent::__construct($config);
     }
-
 
     public function getRetrieveAssetMetadataEndpoint(): string {
         return Craft::parseEnv($this->retrieveAssetMetadataEndpoint);
