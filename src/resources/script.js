@@ -10,15 +10,15 @@ if($("#fields-dam-asset-preview").attr("data-thumbnailurl") == null ||
 }
 
 let modalMarkup = $(`
-<div id="rosas-modal" class="modal"> <!-- modal body -->
-    <div id="modal-test" class="body" style="padding: 24px 25px 90px 24px;"> <!-- modal-content -->
-        <header class="header">
-            <h2>Canto Assets</h2>
-        </header>
-        <iframe id="cantoUCFrame" class="canto-uc-subiframe" src=""></iframe>
-    </div>
-</div>
-`);
+                <div id="rosas-modal" class="modal"> <!-- modal body -->
+                    <div id="modal-test" class="body" style="padding: 24px 25px 90px 24px;"> <!-- modal-content -->
+                        <header class="header">
+                            <h2>Canto Assets</h2>
+                        </header>
+                        <iframe id="cantoUCFrame" class="canto-uc-subiframe" src=""></iframe>
+                    </div>
+                </div>
+                `);
 $modal = new Garnish.Modal(modalMarkup, { 'autoShow' : false });
 
 let pluginName = "cantoUC";

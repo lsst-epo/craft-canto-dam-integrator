@@ -52,9 +52,8 @@ class Assets extends Component
             try {
                 $this->authToken = $this->getAuthToken();
                 if($this->authToken != null && !empty($this->authToken)) {
-		    $this->assetMetadata = $this->getAssetMetadata($damId);
-
-		    $this->assetMetadata["epo_etc"]["elementId"] = $elementId;
+                    $this->assetMetadata = $this->getAssetMetadata($damId);
+                    $this->assetMetadata["epo_etc"]["elementId"] = $elementId;
                     $this->assetMetadata["epo_etc"]["fieldId"] = $fieldId;
                     if(in_array('errorMessage', $this->assetMetadata)) {
                         return [
@@ -81,7 +80,6 @@ class Assets extends Component
                     ]
                 ];
             }
-
         } else {
             return [
                 "status" => "error",
@@ -104,9 +102,9 @@ class Assets extends Component
         foreach($pathArr as $folderName) {
             $query = new Query;
             $result = $query->select('id, parentId')
-                        ->from('volumefolders')
-                        ->where("name = :name", [ ":name" => $folderName])
-                        ->one();
+                            ->from('volumefolders')
+                            ->where("name = :name", [ ":name" => $folderName])
+                            ->one();
             
             $newFolder = new VolumeFolder();
 
@@ -126,28 +124,24 @@ class Assets extends Component
             $parentId = AssetsService::storeFolderRecord($newFolder);
 
             $newFolderRecord = $query->select('id, parentId')
-                                    ->from('volumefolders')
-                                    ->where("name = :name", [ ":name" => $folderName])
-                                    ->one();
+                                     ->from('volumefolders')
+                                     ->where("name = :name", [ ":name" => $folderName])
+                                     ->one();
 
             $parentId = $newFolderRecord["id"];
-
         }
 
         return $parentId;
-
     }
 
     private function saveAssetMetadata() {
         $damVolume = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = Plugin::getInstance()->getSettings()->damVolume);
-
         $query = new Query;
         $damVolResult = $query->select('id, parentId')
-                            ->from('volumefolders')
-                            ->where("name = :name", [ ":name" => $damVolume["name"]])
-                            ->one();
+                              ->from('volumefolders')
+                              ->where("name = :name", [ ":name" => $damVolume["name"]])
+                              ->one();
 
-	//$newAsset->title = "rosas";
         $newAsset = new Asset();
         $newAsset->avoidFilenameConflicts = true;
         $newAsset->setScenario(Asset::SCENARIO_CREATE);
@@ -173,9 +167,8 @@ class Assets extends Component
         $newAsset->dateModified = $now->format('Y-m-d H:i:s');
         $elements = new Elements();
         Craft::info("About to save element", "UDAMI");
-
-	Craft::info("about to log assetMetadata", "potter");
-	Craft::info(Json::encode($this->assetMetadata), "potter");
+	    Craft::info("about to log assetMetadata", "potter");
+	    Craft::info(Json::encode($this->assetMetadata), "potter");
 	
         $success = $elements->saveElement($newAsset, false, true, true, $this->assetMetadata);
 
@@ -210,8 +203,6 @@ class Assets extends Component
                     ->one();
                 if($rows != null && array_key_exists("dam_meta_value", $rows)) {
                     return str_replace('"', '', $rows['dam_meta_value']);
-                } else {
-                    "";
                 }
             }
         }

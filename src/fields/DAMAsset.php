@@ -107,15 +107,15 @@ class DAMAsset extends AssetField {
                 ->select([$col_name])
                 ->from([Table::CONTENT])
                 ->where(Db::parseParam('elementId', $elementId))
-		->column();
+		        ->column();
 
         return $damAssetId;
     }
 
     public static function getAssetMetadataByAssetId($assetId) {
         $rows = AssetMetadata::find()
-            ->where(['"assetId"' => $assetId])
-            ->all();
+                                ->where(['"assetId"' => $assetId])
+                                ->all();
 
         $res = [];
         $currentId = 0;
