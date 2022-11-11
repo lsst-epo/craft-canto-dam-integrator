@@ -1,0 +1,17 @@
+dateModified: 1668209118
+email:
+  fromEmail: support@craftcms.com
+  fromName: 'Craft test site'
+  transportType: craft\mail\transportadapters\Sendmail
+system:
+  edition: solo
+  live: true
+  name: 'Craft test site'
+  schemaVersion: 3.5.13
+  timeZone: America/Los_Angeles
+users:
+  allowPublicRegistration: false
+  defaultGroup: null
+  photoSubpath: null
+  photoVolumeUid: null
+  requireEmailVerification: true
