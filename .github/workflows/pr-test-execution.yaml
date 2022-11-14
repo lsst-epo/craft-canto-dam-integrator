@@ -33,6 +33,11 @@ jobs:
     - name: Get env
       run: gcloud secrets versions access latest --secret=craft-dam-plugin-env > ./tests/.env
 
+    # Composer install
+    - name: Install Composer dependencies
+      run: composer install
+
+
     # Execute those tests
     - name: tests
       uses: joelwmale/codeception-action@master
