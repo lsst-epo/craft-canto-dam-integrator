@@ -1,0 +1,39 @@
+name: 'Test Execution Validation'
+
+on:
+  pull_request:
+    types:
+      - 'opened'
+      - 'synchronize'
+      - 'reopened'
+      - 'closed'
+    branches:
+      - '**'
+
+jobs:
+  build-push-deploy:
+    name: 'Execute Test Cases'
+    runs-on: ubuntu-latest
+    if: ${{ (github.event.action != 'closed') == true) }}
+
+    # Checkout the repository to the GitHub Actions runner
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # gCloud CLI setup
+    - name: Login to GCP
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        service_account_key: ${{ secrets.DEV_SA_KEY }}
+        project_id: skyviewer
+        export_default_credentials: true
+    
+    # Get secrets
+    - name: Get env
+      run: gcloud secrets versions access latest --secret=craft-dam-plugin-env > ./tests/.env
+
+    # Execute those tests
+    - name: tests
+      uses: joelwmale/codeception-action@master
+      ENV_FILE: ./tests/.env

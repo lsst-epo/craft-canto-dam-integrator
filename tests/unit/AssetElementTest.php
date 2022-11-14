@@ -2,12 +2,12 @@
 
 namespace rosas\dam\tests;
 
+use Craft;
 use Codeception\Test\Unit;
 use UnitTester;
-use Craft;
 use rosas\dam\elements\Asset;
 
-class AssetTest extends Unit
+class AssetElementTest extends Unit
 {
     /**
      * @var \UnitTester
@@ -23,9 +23,7 @@ class AssetTest extends Unit
     }
 
 
-    public function testAssetConstructor() {
-        Craft::$app->setEdition(Craft::Pro);
-
+    public function testAssetConstructorHandlesExpectedValues() {
         $test_id = 1;
         $test_key = "test_key";
         $test_value = "test_value";

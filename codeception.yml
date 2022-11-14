@@ -19,4 +19,5 @@ modules:
       cleanup: true
       transaction: true
       dbSetup: { clean: false, setupCraft: false }
+      seed: false
     seed: false
