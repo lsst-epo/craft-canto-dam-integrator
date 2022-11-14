@@ -32,11 +32,16 @@ jobs:
     # Get secrets
     - name: Get env
       run: gcloud secrets versions access latest --secret=craft-dam-plugin-env > ./tests/.env
+    
+    # Configure PHP
+    - name: Setup PHP with PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
 
     # Composer install
     - name: Install Composer dependencies
       run: composer install
-
 
     # Execute those tests
     - name: tests

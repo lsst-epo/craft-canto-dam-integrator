@@ -1,4 +1,4 @@
 .DS_Store
 vendor
 .env
-# tests/_craft/storage/logs
+tests/_craft/storage/logs/
