@@ -42,7 +42,8 @@ jobs:
         command: install
 
     # Execute those tests
-    - name: tests
-      uses: joelwmale/codeception-action@master
-      env:
-        ENV_FILE: ./tests/.env
+    - name: Execute tests
+      run: php vendor/bin/codecept run unit
+      # uses: joelwmale/codeception-action@master
+      # env:
+      #   ENV_FILE: ./tests/.env
