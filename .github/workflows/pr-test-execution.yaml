@@ -38,7 +38,6 @@ jobs:
       uses: php-actions/composer@v6
       with:
         php_version: "7.4"
-        php_extensions: ext-zip
         command: install
 
     # Execute those tests
