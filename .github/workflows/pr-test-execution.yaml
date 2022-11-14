@@ -41,6 +41,12 @@ jobs:
         php_extensions: zip
         command: install
 
+    - name: Connect to SQL proxy
+      uses: mattes/gce-cloudsql-proxy-action@v1
+      with:
+        creds: ${{ secrets.DEV_SA_KEY }}
+        instance: skyviewer:us-central1:db-client-1
+
     # Execute those tests
     - name: Execute tests
       run: php vendor/bin/codecept run unit
