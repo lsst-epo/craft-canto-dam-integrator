@@ -1,9 +1,0 @@
-baseUrl: 'https://craftcms.com'
-enabled: true
-handle: default
-hasUrls: true
-language: en-US
-name: 'Craft test site'
-primary: true
-siteGroup: 0356b33d-60be-41d3-adff-0975b5ba1268
-sortOrder: 1
