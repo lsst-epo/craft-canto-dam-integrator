@@ -36,4 +36,5 @@ jobs:
     # Execute those tests
     - name: tests
       uses: joelwmale/codeception-action@master
-      ENV_FILE: ./tests/.env
+      env:
+        ENV_FILE: ./tests/.env
