@@ -17,15 +17,12 @@ jobs:
     if: ${{ (github.event.action != 'closed' == true) }}
 
     steps:
-    # Configure PHP
-    - name: Setup PHP with PECL extension
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '7.4.0'
-
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
+      uses: nanasess/setup-php@v3
+      with:
+        php-version: '7.4'
 
     # gCloud CLI setup
     - name: Login to GCP
