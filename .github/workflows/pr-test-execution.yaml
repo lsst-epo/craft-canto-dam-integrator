@@ -45,7 +45,7 @@ jobs:
       uses: mattes/gce-cloudsql-proxy-action@v1
       with:
         creds: ${{ secrets.DEV_SA_KEY }}
-        instance: skyviewer:us-central1:db-client-1
+        instance: skyviewer:us-central1:main-rubin-site-db-replica
 
     # Execute those tests
     - name: Execute tests
