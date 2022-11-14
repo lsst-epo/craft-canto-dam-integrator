@@ -20,12 +20,6 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
-      
-    # Configure PHP
-    - name: Setup PHP with PECL extension
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 7.4
 
     # gCloud CLI setup
     - name: Login to GCP
@@ -41,7 +35,9 @@ jobs:
 
     # Composer install
     - name: Install Composer dependencies
-      run: composer install
+      uses: php-actions/composer@v6
+        php_version: "7.4"
+        command: install
 
     # Execute those tests
     - name: tests
