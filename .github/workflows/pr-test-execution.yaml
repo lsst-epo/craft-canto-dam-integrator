@@ -35,11 +35,11 @@ jobs:
 
     # Composer install
     - name: Install Composer dependencies
-      uses: php-actions/composer@v6
-      with:
-        php_version: "7.4"
-        php_extensions: zip
-        command: install
+      uses: docker://composer
+      # with:
+      #   php_version: "7.4"
+      #   php_extensions: zip
+      #   command: install
 
     - name: Connect to SQL proxy
       uses: mattes/gce-cloudsql-proxy-action@v1
@@ -51,10 +51,9 @@ jobs:
     # - name: Use gCloud command to connect to SQL proxy
     #   run: gcloud compute ssh db-client-1 --project=skyviewer --zone=us-central1-a -- -L 127.0.0.1:5432:10.109.176.5:5432 &
 
-    - name: Check docker containers
-      run: docker ps
     # Execute those tests
     - name: Execute tests
+      uses: docker://composer
       run: php vendor/bin/codecept run unit
       # uses: joelwmale/codeception-action@master
       # env:
