@@ -42,7 +42,7 @@ jobs:
         command: install
 
     - name: Connect to SQL proxy
-      uses: mattes/gce-cloudsql-proxy-action@v1
+      uses: mattes/gce-cloudsql-proxy-action@v1.0.1
       with:
         creds: ${{ secrets.DEV_SA_KEY }}
         instance: skyviewer:us-west1:main-rubin-site-db-replica
