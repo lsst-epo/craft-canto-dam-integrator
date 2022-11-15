@@ -36,10 +36,8 @@ jobs:
     # Composer install
     - name: Install Composer dependencies
       uses: docker://composer
-      # with:
-      #   php_version: "7.4"
-      #   php_extensions: zip
-      #   command: install
+      with:
+        args: install
 
     - name: Connect to SQL proxy
       uses: mattes/gce-cloudsql-proxy-action@v1
@@ -53,8 +51,10 @@ jobs:
 
     # Execute those tests
     - name: Execute tests
-      uses: docker://composer
-      run: php vendor/bin/codecept run unit
+      uses: docker://php:7.4
+      with:
+        args: vendor/bin/codecept run unit
+      # run: php vendor/bin/codecept run unit
       # uses: joelwmale/codeception-action@master
       # env:
       #   ENV_FILE: ./tests/.env
