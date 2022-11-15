@@ -51,6 +51,8 @@ jobs:
     # - name: Use gCloud command to connect to SQL proxy
     #   run: gcloud compute ssh db-client-1 --project=skyviewer --zone=us-central1-a -- -L 127.0.0.1:5432:10.109.176.5:5432 &
 
+    - name: Check docker containers
+      run: docker ps
     # Execute those tests
     - name: Execute tests
       run: php vendor/bin/codecept run unit
