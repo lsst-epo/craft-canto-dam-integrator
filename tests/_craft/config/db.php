@@ -1,8 +1,5 @@
 <?php
 
-echo "rosas";
-echo getenv('DB_USER');
-
 return [
     'dsn' => getenv('DB_DSN'),
     'user' => getenv('DB_USER'),
