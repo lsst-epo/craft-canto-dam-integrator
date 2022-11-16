@@ -53,7 +53,8 @@ jobs:
     # Execute those tests
     - name: Execute tests
       run: |-
-        ./cloud_sql_proxy -instances=skyviewer:us-west1:main-rubin-site-db-replica=tcp:5432 && php vendor/bin/codecept run unit
+        ./cloud_sql_proxy -instances=skyviewer:us-west1:main-rubin-site-db-replica=tcp:5432 &
+        php vendor/bin/codecept run unit
       # uses: joelwmale/codeception-action@master
       # env:
       #   ENV_FILE: ./tests/.env
