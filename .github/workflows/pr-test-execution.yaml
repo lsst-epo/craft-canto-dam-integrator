@@ -49,7 +49,7 @@ jobs:
     - name: Execute tests
       run: |-
         gcloud compute ssh db-client-1 --project=skyviewer --zone=us-central1-a -- -L 127.0.0.1:5432:10.109.176.5:5432 &
-        sleep 5 && php vendor/bin/codecept run unit
+        sleep 10 && php vendor/bin/codecept run unit
       # uses: joelwmale/codeception-action@master
       # env:
       #   ENV_FILE: ./tests/.env
