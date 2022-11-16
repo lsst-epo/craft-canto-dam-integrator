@@ -201,7 +201,8 @@ function loadIframeContent(fieldId, elementId, type) {
     let tokenInfo = {};
     let cantoLoginPage = "https://oauth.canto.com/oauth/api/oauth2/universal2/authorize?response_type=code&app_id=" + "52ff8ed9d6874d48a3bef9621bc1af26" + "&redirect_uri=http://localhost:8080&state=abcd" + "&code_challenge=" + "1649285048042" + "&code_challenge_method=plain";
 
-    var cantoContentPage = "./cantoAssets/cantoContent.html";
+    console.log("Inside of script.js about to load UC!");
+    var cantoContentPage = "./cantoAssets/cantoContent.html?decache=" + Date.now();
     if(tokenInfo.accessToken){
         $("#cantoUCFrame").attr("data-test", val);
         $("#cantoUCFrame").attr("src", cantoContentPage);

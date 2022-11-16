@@ -2,10 +2,9 @@ var cantoViewDom = {};
 var _accessToken = "";
 var _refreshToken = "";
 var _tokenType = "";
-var _tenants = "randy.flightbycanto.com";
+var _tenants = "";
 var cantoAPI = {};
 var _APIHeaders = {};
-// var self = {};
 var searchedBy = ""; //bySearch bytree byScheme''
 var currentImageList = [];
 var singleCountLoad = 50;
@@ -13,9 +12,6 @@ var apiNextStart = 0;
 var isLoadingComplete = false;
 var _formatDistrict = '';
 
-// $(document).ready(function() {
-//     self = $("#cantoViewBody");
-// });
 /* -----------------canto API start-------------------------------------------------------------*/
 
 function setToken(tokenInfo){
@@ -29,21 +25,21 @@ function setToken(tokenInfo){
     };
     _formatDistrict = tokenInfo.formatDistrict;
 }
-cantoAPI.loadTree = function(callback) {
-    var url = "https://" + _tenants + "/api/v1/tree?sortBy=name&sortDirection=ascending&layer=1";
-    $.ajax({
-        headers:_APIHeaders,
-        type: "GET",
-        url: url,
-        async: true,
-        error: function(request) {
-             alert("load tree error");
-        },
-        success: function(data) {
-            callback(data.results);
-        }
-    });
-};
+// cantoAPI.loadTree = function(callback) {
+//     var url = "https://" + _tenants + "/api/v1/tree?sortBy=name&sortDirection=ascending&layer=1";
+//     $.ajax({
+//         headers:_APIHeaders,
+//         type: "GET",
+//         url: url,
+//         async: true,
+//         error: function(request) {
+//              alert("load tree error");
+//         },
+//         success: function(data) {
+//             callback(data.results);
+//         }
+//     });
+// };
 cantoAPI.loadSubTree = function(treeID, callback) {
     // var defer = $.Deferred();
     var url = "https://" + _tenants + "/api/v1/tree/" + treeID;
@@ -311,7 +307,7 @@ $(document).ready(function(){
         if(tokenInfo && tokenInfo.accessToken && tokenInfo.accessToken.length >0)
         {
         setToken(tokenInfo);
-        treeviewDataHandler();
+        //treeviewDataHandler();
         //init -- get image list
         var initSchme = $("#cantoViewBody").find(".type-font.current").data("type");
         $("#cantoViewBody").find("#globalSearch input").val("");
@@ -762,10 +758,10 @@ function dateHandler(str){
         + str.substr(6, 2) + ' ' + str.substr(8, 2) + ':' + str.substr(10, 2);
 }
 
-function treeviewDataHandler() {
-    cantoAPI.loadTree(treeviewController);
+// function treeviewDataHandler() {
+//     cantoAPI.loadTree(treeviewController);
 
-}
+// }
 
 var treeviewController= function(dummyData) {
     // var $("#cantoViewBody") = $(cantoViewDom);

@@ -8,33 +8,34 @@ use rosas\dam\db\AssetMetadata;
 
 class AssetQuery {
 
-    private static string $DAM_META_VALUE = "dam_meta_value";
-    private static string $DAM_META_KEY = "dam_meta_key";
-    private static string $ASSET_ID = "assetId";
-    private static string $ELEMENT_ID = "elementId";
-    private static string $FIELD_ID = "fieldId";
+    const DAM_META_VALUE = "dam_meta_value";
+    const DAM_META_KEY = "dam_meta_key";
+    const ASSET_ID = "assetId";
+    const ELEMENT_ID = "elementId";
+    const FIELD_ID = "fieldId";
+    const DAM_ID = "damId";
 
-    public static function getAssetIdByElementId($elementId, $fieldId = null) {
+    public static function getAssetIdByElementId($elementId_p, $fieldId = null) {
     	$assetId = null;
         $elementRows = AssetMetadata::find()
-                                    ->where([$DAM_META_VALUE => $elementId, $DAM_META_KEY => $ELEMENT_ID])
+                                    ->where([self::DAM_META_VALUE => $elementId_p, self::DAM_META_KEY => self::ELEMENT_ID])
                                     ->all();
 
         if(count($elementRows) > 1) { // multiple DAM assets are associated with this entry, so perform another query based on fieldId if it is not null
             $assetIds = [];
             foreach($elementRows as $row) {
-                array_push($assetIds, $row[$ASSET_ID]);
+                array_push($assetIds, $row[self::ASSET_ID]);
             }
 
             // Now perform another query that narrows down the search based on field ID
             $assetIdRow = AssetMetadata::find()
-                                        ->where([$ASSET_ID => $assetIds, $DAM_META_KEY => $FIELD_ID, $DAM_META_VALUE => $fieldId])
+                                        ->where([self::ASSET_ID => $assetIds, self::DAM_META_KEY => self::FIELD_ID, self::DAM_META_VALUE => $fieldId])
                                         ->one();
             if($assetIdRow != null) {
-                $assetId = $assetIdRow[$ASSET_ID];
+                $assetId = $assetIdRow[self::ASSET_ID];
             }
         } else if (count($elementRows) == 1) {
-            $assetId = $elementRows[0][$ASSET_ID];
+            $assetId = $elementRows[0][self::ASSET_ID];
         } 
 
         return $assetId;
@@ -42,12 +43,12 @@ class AssetQuery {
 
     public static function getAssetIdByDamId($damId) {
         $rows = AssetMetadata::find()
-        ->where(['dam_meta_value' => $damId, 'dam_meta_key' => 'damId'])
+        ->where([self::DAM_META_VALUE => $damId, self::DAM_META_KEY => self::DAM_ID])
         ->all();
 
         $ids = [];
         foreach($rows as $row) {
-            array_push($ids, str_replace('"', '', $row['assetId']));
+            array_push($ids, str_replace('"', '', $row[self::ASSET_ID]));
         }
         return $ids;
     }
