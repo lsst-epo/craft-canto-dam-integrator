@@ -41,12 +41,10 @@ jobs:
         php_extensions: zip
         command: install
 
-    - name: Connect to SQL proxy
-      uses: wagnerpereira/gce-cloudsql-proxy-action@v2.0.2
-      with:
-        creds: ${{ secrets.DEV_SA_KEY }}
-        instance: skyviewer:us-west1:main-rubin-site-db-replica
-        port: 5432
+    - name: Get Cloud SQL Proxy
+      run: |
+        wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+        chmod +x cloud_sql_proxy
 
     # Get secrets
     # - name: Use gCloud command to connect to SQL proxy
@@ -54,7 +52,8 @@ jobs:
 
     # Execute those tests
     - name: Execute tests
-      run: php vendor/bin/codecept run unit
+      run: |-
+        ./cloud_sql_proxy -instances=skyviewer:us-west1:main-rubin-site-db-replica=tcp:5432 && php vendor/bin/codecept run unit
       # uses: joelwmale/codeception-action@master
       # env:
       #   ENV_FILE: ./tests/.env
