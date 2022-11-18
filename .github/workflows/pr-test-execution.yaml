@@ -16,6 +16,19 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ (github.event.action != 'closed' == true) }}
 
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -48,8 +61,7 @@ jobs:
     # Execute those tests
     - name: Execute tests
       run: |-
-        gcloud compute ssh db-client-1 --project=skyviewer --zone=us-central1-a -- -L 127.0.0.1:5432:10.109.176.5:5432 &
-        sleep 10 && php vendor/bin/codecept run unit
+        php vendor/bin/codecept run unit
       # uses: joelwmale/codeception-action@master
       # env:
       #   ENV_FILE: ./tests/.env
