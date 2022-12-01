@@ -19,7 +19,50 @@
     height: 100%;
 }
 
-#uploadBtn { cursor: pointer; }
+/* #uploadBtn { cursor: pointer; } */
+
+#uploadBtnInvisible {
+    display: none;
+}
+   
+#uploadBtn {
+    color: transparent;
+    background-color: #078b8c !important;
+    color: #ffffff;
+    border-radius: 17px;
+    border: none;
+    margin: 0 0 0 15px;
+    padding: 5px 16px 5px 16px;
+    font-size: 15px;
+  }
+#uploadBtn::-webkit-file-upload-button {
+    visibility: hidden; 
+}
+#uploadBtn::before {
+    content: 'Upload File';
+    color: #fff;
+    display: inline-block;
+    background: #078b8c !important;
+    /*   border: 1px solid #999; */
+    border-radius: 17px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    /*   text-shadow: 1px 1px #fff; */
+    font-weight: 700;
+    font-size: 15px;
+}
+#uploadBtn:hover::before {
+    border-color: black;
+}
+#uploadBtn:active {
+    outline: 0;
+}
+#uploadBtn:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
+}
 
 /* End of styling added by erosas */
 

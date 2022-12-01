@@ -25,21 +25,7 @@ function setToken(tokenInfo){
     };
     _formatDistrict = tokenInfo.formatDistrict;
 }
-// cantoAPI.loadTree = function(callback) {
-//     var url = "https://" + _tenants + "/api/v1/tree?sortBy=name&sortDirection=ascending&layer=1";
-//     $.ajax({
-//         headers:_APIHeaders,
-//         type: "GET",
-//         url: url,
-//         async: true,
-//         error: function(request) {
-//              alert("load tree error");
-//         },
-//         success: function(data) {
-//             callback(data.results);
-//         }
-//     });
-// };
+
 cantoAPI.loadSubTree = function(treeID, callback) {
     // var defer = $.Deferred();
     var url = "https://" + _tenants + "/api/v1/tree/" + treeID;
@@ -231,6 +217,7 @@ cantoAPI.insertImage = function(imageArray){
     data.assetList = [];
 
     var url = "https://" + _tenants + "/api_binary/v1/batch/directuri";
+    console.log("calling insertImage!!!");
     $.ajax({
         type: "POST",
         headers: {"Authorization": _tokenType + " " + _accessToken},
@@ -240,7 +227,7 @@ cantoAPI.insertImage = function(imageArray){
         data: JSON.stringify(imageArray),
         async: true,
         error: function(request) {
-                alert("get original Url error");
+            alert("get original Url error");
         },
         success: function(resp) {
             for(var i=0; i<resp.length;i++)
@@ -314,6 +301,7 @@ $(document).ready(function(){
         getImageInit(initSchme);
         }
     };
+
 });
 
 function getTokenInfo(){
@@ -758,11 +746,6 @@ function dateHandler(str){
         + str.substr(6, 2) + ' ' + str.substr(8, 2) + ':' + str.substr(10, 2);
 }
 
-// function treeviewDataHandler() {
-//     cantoAPI.loadTree(treeviewController);
-
-// }
-
 var treeviewController= function(dummyData) {
     // var $("#cantoViewBody") = $(cantoViewDom);
     // console.log(dummyData);
@@ -892,3 +875,75 @@ function loadMoreAction(){
     }
 }
 
+function uploadClick(e) {
+    console.log("about to click upload button programmatically!");
+    document.querySelector("#uploadBtnInvisible").click();
+}
+
+function uploadFileToCanto(e) {
+    console.log("main.js2: A file was selected!!!");
+    console.dir(e);
+    console.log("tenant: ", _tenants);
+    console.log("headers: ", _APIHeaders);
+
+    let url = `https://${_tenants}/api/v1/upload/setting`;
+    $.ajax({
+        method: "GET",
+        url: url,
+        async: true,
+        headers: {"Authorization": _tokenType + " " + _accessToken},
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        error: function(request, status, error) {
+            console.log("failed getting upload settings");
+            console.log("request: ", request);
+            console.log("status: ", status);
+            console.log("error: ", error);
+        },
+        success: function(data) {
+            console.log("received data back from API call!");
+            console.log(data);
+
+            const formData = new FormData();
+            formData.append("key", data.key);
+            formData.append("acl", data.acl);
+            formData.append("AWSAccessKeyId", data.AWSAccessKeyId);
+            formData.append("Policy", data.Policy);
+            formData.append("Signature", data.Signature);
+            formData.append("x-amz-meta-file_name", e.files[0].name);
+            formData.append("x-amz-meta-tag", "");
+            formData.append("x-amz-meta-scheme", "");
+            formData.append("x-amz-meta-id", "");
+            formData.append("x-amz-meta-album_id", "");
+            formData.append("file", e.files[0]);
+
+            console.log("formData:")
+            // Display the key/value pairs
+            for (var pair of formData.entries()) {
+                console.log(pair[0]+ ', ' + pair[1]); 
+            }
+
+            fetch(data.url, {
+                method: "post",
+                body: formData,
+                mode: "no-cors",
+                redirect: 'follow'
+            })
+            .then(response => {
+                console.log("in the .then()!");
+                console.log(response);
+            })
+            .catch(error => {
+                console.log("in the .error()!");
+                console.log(error);
+            })
+            .finally(() => {
+                console.log("in the .finally()!!1");
+                window.location.reload();
+            });
+        }
+    });
+
+    
+
+}

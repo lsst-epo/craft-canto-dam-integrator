@@ -1,5 +1,10 @@
 
 $(document).ready(function(){
+    $("#uploadBtn").change(e => {
+        console.log("uploaded!");
+        console.log(e);
+    });
+
     $.cantoUC({
         env: "canto.com",
     }, replaceCantoTagByImage);
@@ -8,6 +13,11 @@ function calcImageSize(num) {
     var size = Math.round(Number(num)/1024);
     return size < 1024 ? size + "KB" : Math.round(size/1024) + "MB";
 }
+$("#uploadBtn").change(e => {
+    console.log("uploaded!");
+    console.log(e);
+});
+
 function replaceCantoTagByImage(id, assetArray){
     var body = $("body");
     var cantoTag = body.find("canto" + "#" + id);
@@ -33,6 +43,11 @@ function replaceCantoTagByImage(id, assetArray){
     currentCantoTagID,
     formatDistrict,
     timeStamp;
+
+    $("#uploadBtn").change(e => {
+        console.log("uploaded!");
+        console.log(e);
+    });
 
     cantoUC = $.fn[pluginName] = $[pluginName] = function (options, callback) {
         settings(options);

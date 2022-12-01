@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1, user-scalable=no">
     <!--Prevent the default action to identify the number as phone, use <a href='tel:xxxxxxxx'></a> to identify the number -->
     <meta name = "format-detection" content = "telephone=no">
@@ -34,10 +35,10 @@
         </div>
         <div id="selectedCountSection" class="selected-count-section hidden"><span id="selected-count">2</span><span> File(s) Selected</span></div>
         <div style="display: inline-block;">
-            <button id="uploadBtn" help-id="upload-button" set-aria="{i:70,d:'upload files',pup:1}" class="btn-parent btn-default thirdColorText" ng-mouseover="showNavToolTip('Upload', $event, true)" ng-mouseout="removeNavToolTip()" file-input="topTplBottomModeFileInput" on-before-select-file="onBeforeSelectFile()" on-change="startUploadFiles(this)" tabindex="70" aria-label="upload files" aria-haspopup="true" style="background-color: #078b8c !important; color: #ffffff; border-radius: 17px; margin: 0 0 0 15px; padding: 0px 16px 0px 16px; font-size: 15px;">
-                <span class="icon-add" style="vertical-align:top;line-height:34px;"></span>
-                <span data-i18n="DMC_Top_UploadFiles" style="vertical-align:top;line-height:34px;">Upload Files</span>
-            <div id="frm_topTplBottomModeFileInput"><input id="inFile_topTplBottomModeFileInput" aria-label="File Input" tabindex="-1" type="file" multiple="" style="display:block;position:absolute; top:-9000px; left:-100px; width:50px;right:50px;" accept=""></div></button>
+            <span class="icon-add" style="vertical-align:top;line-height:34px;"></span>
+            <input type="button" onClick="uploadClick(this)" value="Upload File"/>
+            <input onChange="uploadFileToCanto(this);" data-buttonText="Upload File" type="file" id="uploadBtnInvisible" help-id="upload-button" set-aria="{i:70,d:'upload files',pup:1}" class="btn-parent btn-default thirdColorText" tabindex="70" aria-label="upload files" aria-haspopup="true">
+        </input>
         </div>
         <div class="logout-btn" id="logoutBtn" title="Logout">
             <span class="icon-s-logoout-24"></span>
