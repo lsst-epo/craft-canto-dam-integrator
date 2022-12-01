@@ -19,6 +19,15 @@
     height: 100%;
 }
 
+#modal-status-bar {
+    height: 25px;
+    background: linear-gradient(87deg, rgba(7,139,140,1) 0%, rgba(255,255,255,1) 50%);
+    margin: -5px 25px 0px 0px;
+    padding-left: 25px;
+    color: #fff;
+    display: none;
+}
+
 /* #uploadBtn { cursor: pointer; } */
 
 #uploadBtnInvisible {
@@ -27,10 +36,14 @@
    
 #uploadBtn {
     color: transparent;
-    background-color: #078b8c !important;
+    /* background-color: #078b8c !important; */
+    background: linear-gradient(16deg, rgba(7,139,140,1) 0%, rgba(169,218,0,1) 100%);
     color: #ffffff;
     border-radius: 17px;
-    border: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: 2px solid green;
+    border-left: 2px solid green;
     margin: 0 0 0 15px;
     padding: 5px 16px 5px 16px;
     font-size: 15px;

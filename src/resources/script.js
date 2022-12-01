@@ -16,6 +16,7 @@ let modalMarkup = $(`
                             <h2>Canto Assets</h2>
                         </header>
                         <iframe id="cantoUCFrame" class="canto-uc-subiframe" src=""></iframe>
+                        <div id="modal-status-bar">Uploading Image...</div>
                     </div>
                 </div>
                 `);

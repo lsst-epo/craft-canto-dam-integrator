@@ -881,10 +881,10 @@ function uploadClick(e) {
 }
 
 function uploadFileToCanto(e) {
-    console.log("main.js2: A file was selected!!!");
-    console.dir(e);
-    console.log("tenant: ", _tenants);
-    console.log("headers: ", _APIHeaders);
+    // console.log("main.js2: A file was selected!!!");
+    // console.dir(e);
+    // console.log("tenant: ", _tenants);
+    // console.log("headers: ", _APIHeaders);
 
     let url = `https://${_tenants}/api/v1/upload/setting`;
     $.ajax({
@@ -901,8 +901,8 @@ function uploadFileToCanto(e) {
             console.log("error: ", error);
         },
         success: function(data) {
-            console.log("received data back from API call!");
-            console.log(data);
+            // console.log("received data back from API call!");
+            // console.log(data);
 
             const formData = new FormData();
             formData.append("key", data.key);
@@ -917,11 +917,13 @@ function uploadFileToCanto(e) {
             formData.append("x-amz-meta-album_id", "");
             formData.append("file", e.files[0]);
 
-            console.log("formData:")
+            // console.log("formData:")
             // Display the key/value pairs
-            for (var pair of formData.entries()) {
-                console.log(pair[0]+ ', ' + pair[1]); 
-            }
+            // for (var pair of formData.entries()) {
+            //     console.log(pair[0]+ ', ' + pair[1]); 
+            // }
+
+            let statusBar = parent.document.querySelector("#modal-status-bar");
 
             fetch(data.url, {
                 method: "post",
@@ -930,20 +932,62 @@ function uploadFileToCanto(e) {
                 redirect: 'follow'
             })
             .then(response => {
-                console.log("in the .then()!");
-                console.log(response);
+                // console.log("in the .then()!");
+                // console.log(response);
+                statusBar.style.display = "block";
+                statusBar.innerHTML = "Uploading image...";
+
             })
             .catch(error => {
-                console.log("in the .error()!");
+                // console.log("in the .error()!");
                 console.log(error);
             })
             .finally(() => {
-                console.log("in the .finally()!!1");
-                window.location.reload();
+                // console.log("in the .finally()!!1");
+                // window.location.reload();
+                statusBar.innerHTML = "Upload complete - Canto processing...";
+                checkStatusInterval(e.files[0].name);
             });
         }
     });
 
-    
+    function checkStatusInterval(filename) {
+        let url = `https://${_tenants}/api/v1/upload/status?hours=1`;
+        let statusBar = parent.document.querySelector("#modal-status-bar");
+        statusChecker = setInterval(() => {
+            
+            fetch(url, {
+                method: "get",
+                headers: {"Authorization": _tokenType + " " + _accessToken},
+            }).then(response => {
+                // console.log("in .then()");
+                return response.json();
+            }).then(body => {
+                // console.log("in body!");
+                // console.log(body);
+                if(body.results && body.results.length > 0) {
+                    let results = body.results.filter(e => {
+                        console.log("evaluating: ", e);
+                        if(e.name == filename && e.status != "Done") {
+                            console.log("match!!!");
+                            return e;
+                        }
+                    });
+                    console.log("results: ", results);
+                    if(results.filter(e => e != undefined).length == 0) {
+                        statusBar.innerHTML = "Canto processing complete! Reloading"
+                        window.location.reload();
+                    }
+                }
+            }).catch(error => {
+                console.log("an error occurred!");
+                console.log(error)
+            }).finally(() => {
+                console.log("in the finally!!");
+            });
+        }, 5000);
+    }
 
 }
+
+parent.document.querySelector("#modal-status-bar").style.display = "none";
