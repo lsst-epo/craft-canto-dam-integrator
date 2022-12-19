@@ -35,7 +35,7 @@ $("#fields-remove-dam-asset").click(function(e) {
         dataType:"json", 
         data:{ 
             "elementId": elementId,
-	    "fieldId": fieldId	
+	        "fieldId": fieldId	
         }, 
         success:function(data){
             let res = JSON.parse(data);
@@ -57,7 +57,8 @@ $("#fields-rosas-clicker").click(function(e) {
     let fieldId = e.target.dataset.field;
     let elementId = e.target.dataset.element;
     let type = e.target.dataset.type;
-    loadIframeContent(fieldId, elementId, type);
+    let accessToken = e.target.dataset.access;
+    loadIframeContent(fieldId, elementId, type, accessToken);
 });
 
 function dynamicLoadCss(url) {
@@ -197,15 +198,19 @@ function addEventListener() {
     }
 
 /*--------------------------load iframe content---------------------------------------*/
-function loadIframeContent(fieldId, elementId, type) {
+function loadIframeContent(fieldId, elementId, type, accessToken) {
     timeStamp = new Date().getTime();
-    let tokenInfo = {};
+    let tokenInfo = {accessToken: accessToken};
     let cantoLoginPage = "https://oauth.canto.com/oauth/api/oauth2/universal2/authorize?response_type=code&app_id=" + "52ff8ed9d6874d48a3bef9621bc1af26" + "&redirect_uri=http://localhost:8080&state=abcd" + "&code_challenge=" + "1649285048042" + "&code_challenge_method=plain";
 
     console.log("Inside of script.js about to load UC!");
-    var cantoContentPage = "./cantoAssets/cantoContent.html?decache=" + Date.now();
+    var cantoContentPage = "/admin/universal-dam-integrator/cantoContent.html";
     if(tokenInfo.accessToken){
-        $("#cantoUCFrame").attr("data-test", val);
+        // $("#cantoUCFrame").attr("data-test", val);
+        $("#cantoUCFrame").attr("data-element", elementId);
+        $("#cantoUCFrame").attr("data-field", fieldId);
+        $("#cantoUCFrame").attr("data-type", type);
+        $("#cantoUCFrame").attr("data-access", tokenInfo.accessToken);
         $("#cantoUCFrame").attr("src", cantoContentPage);
     } else {
         $("#cantoUCFrame").attr("data-element", elementId);
