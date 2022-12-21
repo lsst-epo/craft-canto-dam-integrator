@@ -18,7 +18,7 @@
       "docs": "https://github.com/lsst-epo/craft3-universal-dam-integrator/blob/main/README.md"
     },
     "require": {
-      "craftcms/cms": "^3.1.5"
+      "craftcms/cms": "3.7.59"
     },
     "autoload": {
       "psr-4": {
@@ -28,5 +28,12 @@
     "extra": {
       "name": "Universal DAM Integrator",
       "handle": "universal-dam-integrator"
+    },
+    "require-dev": {
+        "vlucas/phpdotenv": "^3.0",
+        "codeception/codeception": "^4.2.2",
+        "codeception/module-asserts": "^2.0",
+        "codeception/module-yii2": "^1.1",
+        "ext-zip": "^1.15"
     }
-  }
+}

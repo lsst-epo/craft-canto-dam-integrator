@@ -1,0 +1,68 @@
+name: 'Test Execution Validation'
+
+on:
+  pull_request:
+    types:
+      - 'opened'
+      - 'synchronize'
+      - 'reopened'
+      - 'closed'
+    branches:
+      - '**'
+
+jobs:
+  build-push-deploy:
+    name: 'Execute Test Cases'
+    runs-on: ubuntu-latest
+    if: ${{ (github.event.action != 'closed' == true) }}
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: craft_testing_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # gCloud CLI setup
+    - name: Login to GCP
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        service_account_key: ${{ secrets.DEV_SA_KEY }}
+        project_id: skyviewer
+        export_default_credentials: true
+    
+    # Get secrets
+    - name: Get env
+      run: gcloud secrets versions access latest --secret=craft-dam-plugin-env > ./tests/.env
+
+    # Composer install
+    - name: Install Composer dependencies
+      uses: php-actions/composer@v6
+      with:
+        php_version: "7.4"
+        php_extensions: zip
+        command: install
+
+    # Get secrets
+    # - name: Use gCloud command to connect to SQL proxy
+    #   run: gcloud compute ssh db-client-1 --project=skyviewer --zone=us-central1-a -- -L 127.0.0.1:5432:10.109.176.5:5432 &
+
+    # Execute those tests
+    - name: Execute tests
+      run: |-
+        php vendor/bin/codecept run unit
+      # uses: joelwmale/codeception-action@master
+      # env:
+      #   ENV_FILE: ./tests/.env
