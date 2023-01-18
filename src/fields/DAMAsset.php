@@ -8,6 +8,7 @@ use craft\base\ElementInterface;
 use craft\helpers\Json;
 use rosas\dam\controllers\AssetSyncController;
 use rosas\dam\db\AssetMetadata;
+use rosas\dam\services\Assets as AssetService;
 use craft\gql\arguments\elements\Asset as AssetArguments;
 use rosas\dam\gql\interfaces\DAMAssetInterface as AssetInterface;
 use rosas\dam\gql\resolvers\DAMAssetResolver as AssetResolver;
@@ -66,6 +67,9 @@ class DAMAsset extends AssetField {
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $metadata = [];
 
+        $assetService = new AssetService();
+        $authToken = $assetService->getAuthToken();
+
         // Render the input template
         $templateVals =             [
             'name' => $this->handle,
@@ -75,6 +79,7 @@ class DAMAsset extends AssetField {
             'id' => $id,
             'element' => Json::encode($element),
             'namespacedId' => $namespacedId,
+            'accessToken' => $authToken
         ];
 
         try {
