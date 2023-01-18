@@ -15,7 +15,7 @@ class Settings extends Model
     public $retrieveAssetMetadataEndpoint;
     public $damVolume;
 
-    public function init() {
+    public function init(): void {
         parent::init();
     }
 
@@ -43,7 +43,7 @@ class Settings extends Model
         return Craft::parseEnv($this->appId);
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             [['authEndpoint', 'appId', 'secretKey', 'retrieveAssetMetadataEndpoint', 'damVolume'], 'required']

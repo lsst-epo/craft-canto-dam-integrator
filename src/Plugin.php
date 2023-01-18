@@ -27,7 +27,7 @@ class Plugin extends \craft\base\Plugin
     // added asset extends
     public static $plugin;
 
-    public $hasCpSettings = true;
+    public bool $hasCpSettings = true;
 
     public function __construct($id, $parent = null, array $config = []) {
         $config["components"] = [
@@ -72,7 +72,7 @@ class Plugin extends \craft\base\Plugin
         Event::on(
             \craft\services\Assets::class,
             \craft\services\Assets::EVENT_GET_ASSET_THUMB_URL,
-            function (GetAssetThumbUrlEvent $event) {
+            function (\craft\events\DefineAssetThumbUrlEvent $event) {
                 Craft::debug(
                     '\craft\services\Assets::EVENT_GET_ASSET_THUMB_URL',
                     __METHOD__
@@ -95,7 +95,7 @@ class Plugin extends \craft\base\Plugin
         Event::on(
             CraftAssets::class,
             CraftAssets::EVENT_GET_ASSET_URL,
-                function(GetAssetUrlEvent $event) {
+                function(\craft\events\DefineAssetUrlEvent $event) {
                     $event->url = Plugin::$plugin->assets->getUrl($event);
                 }
         );
@@ -173,14 +173,14 @@ class Plugin extends \craft\base\Plugin
         );
     }
 
-    protected function settingsHtml() {
+    protected function settingsHtml(): ?string {
         return \Craft::$app->getView()->renderTemplate(
             'universal-dam-integrator/settings',
             [ 'settings' => $this->getSettings() ]
         );
     }
 
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new \rosas\dam\models\Settings();
     }

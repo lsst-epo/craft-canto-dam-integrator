@@ -25,17 +25,17 @@ class DAMAsset extends AssetField {
      /**
      * @inheritdoc
      */
-    protected $settingsTemplate = 'universal-dam-integrator/dam-asset-settings';
+    protected string $settingsTemplate = 'universal-dam-integrator/dam-asset-settings';
 
     /**
      * @inheritdoc
      */
-    protected $inputTemplate = 'universal-dam-integrator/dam-asset';
+    protected string $inputTemplate = 'universal-dam-integrator/dam-asset';
 
     /**
      * @inheritdoc
      */
-    protected $inputJsClass = 'Craft.DamAssetSelectInput';
+    protected ?string $inputJsClass = 'Craft.DamAssetSelectInput';
 
     public function __construct(array $config = []) {
         parent::__construct($config);
@@ -50,7 +50,7 @@ class DAMAsset extends AssetField {
     }
 
     // Pulled from \craft\fields\Assets
-    public function getContentGqlType() {
+    public function getContentGqlType(): \GraphQL\Type\Definition\Type|array {
         return [
             'name' => $this->handle,
             'type' => Type::nonNull(Type::listOf(AssetInterface::getType())),
@@ -60,7 +60,7 @@ class DAMAsset extends AssetField {
         ];
     }
 
-    public function getInputHtml($value, ElementInterface $element = null): string {
+    public function getInputHtml(mixed $value, ?\craft\base\ElementInterface $element = null): string {
         // Get our id and namespace
         $id = Craft::$app->getView()->formatInputId($this->handle);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);

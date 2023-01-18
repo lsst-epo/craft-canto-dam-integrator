@@ -194,11 +194,11 @@ class Assets extends Component
     /**
      * Handle responding to EVENT_GET_ASSET_THUMB_URL events
      *
-     * @param GetAssetThumbUrlEvent $event
+     * @param \craft\events\DefineAssetThumbUrlEvent $event
      *
      * @return null|string
      */
-    public function handleGetAssetThumbUrlEvent(GetAssetThumbUrlEvent $event) {
+    public function handleGetAssetThumbUrlEvent(\craft\events\DefineAssetThumbUrlEvent $event) {
         $url = $event->url;
         $asset = $event->asset;
     
@@ -314,7 +314,7 @@ class Assets extends Component
      * @return string|null
      * @throws InvalidConfigException
      */
-    public function getUrl(GetAssetUrlEvent $event)
+    public function getUrl(\craft\events\DefineAssetUrlEvent $event)
     {
         $asset = $event->asset;
         $url = $event->url;

@@ -41,7 +41,7 @@ class DAMVolume extends Volume
     }
 
 
-    
+
     /**
      * @inheritdoc
      */

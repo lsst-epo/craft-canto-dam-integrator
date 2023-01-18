@@ -196,7 +196,7 @@ class DAMAssetQuery extends ElementQuery {
         parent::__construct($elementType, $config);
     }
   
-    public function populate($rows) {
+    public function populate($rows): array {
         return parent::populate($this->normalizeMetadata($rows));
     }
 
