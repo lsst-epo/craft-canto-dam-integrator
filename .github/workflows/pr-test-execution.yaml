@@ -16,6 +16,20 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ (github.event.action != 'closed' == true) }}
 
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: craft_testing_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -41,19 +55,14 @@ jobs:
         php_extensions: zip
         command: install
 
-    # - name: Connect to SQL proxy
-    #   uses: mattes/gce-cloudsql-proxy-action@v1
-    #   with:
-    #     creds: ${{ secrets.DEV_SA_KEY }}
-    #     instance: skyviewer:us-west1:main-rubin-site-db-replica
-
     # Get secrets
-    - name: Use gCloud command to connect to SQL proxy
-      run: gcloud compute ssh db-client-1 --project=skyviewer --zone=us-central1-a -- -L 127.0.0.1:5432:10.109.176.5:5432 &
+    # - name: Use gCloud command to connect to SQL proxy
+    #   run: gcloud compute ssh db-client-1 --project=skyviewer --zone=us-central1-a -- -L 127.0.0.1:5432:10.109.176.5:5432 &
 
     # Execute those tests
     - name: Execute tests
-      run: php vendor/bin/codecept run unit
+      run: |-
+        php vendor/bin/codecept run unit
       # uses: joelwmale/codeception-action@master
       # env:
       #   ENV_FILE: ./tests/.env
