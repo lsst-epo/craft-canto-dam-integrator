@@ -25,6 +25,21 @@ function setToken(tokenInfo){
     _formatDistrict = tokenInfo.formatDistrict;
 }
 
+cantoAPI.loadTree = function(callback) {
+    var url = "https://" + _tenants + "/api/v1/tree?sortBy=name&sortDirection=ascending&layer=1";
+    $.ajax({
+        headers:_APIHeaders,
+        type: "GET",
+        url: url,
+        async: true,
+        error: function(request) {
+             alert("load tree error");
+        },
+        success: function(data) {
+            callback(data.results);
+        }
+    });
+};
 cantoAPI.loadSubTree = function(treeID, callback) {
     let url = `https://${_tenants}/api/v1/tree/${treeID}`;
     $.ajax({
@@ -266,6 +281,7 @@ $(document).ready(function(){
                 accessToken: parent.document.querySelector("#cantoUCFrame").dataset.access
             });
         }
+        treeviewDataHandler();
         let initSchme = $("#cantoViewBody").find(".type-font.current").data("type");
         $("#cantoViewBody").find("#globalSearch input").val("");
         getImageInit(initSchme);
@@ -686,6 +702,10 @@ function imageNewDetail(detailData){
 function dateHandler(str){
     return str.substr(0, 4) + '-' + str.substr(4, 2) + '-'
         + str.substr(6, 2) + ' ' + str.substr(8, 2) + ':' + str.substr(10, 2);
+}
+
+function treeviewDataHandler() {
+    cantoAPI.loadTree(treeviewController);
 }
 
 let treeviewController= function(dummyData) {

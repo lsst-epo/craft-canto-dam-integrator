@@ -44,7 +44,7 @@ class AssetSyncController extends Controller {
      * - An array of action ID/bitwise pairs (e.g. `['save-guest-entry' => self::ALLOW_ANONYMOUS_OFFLINE]` – indicates
      *   that the listed action IDs can be accessed anonymously per the bitwise int assigned to it.
      */
-    public $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
+    public array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
 
     /**
      * DAM Asset upload controller

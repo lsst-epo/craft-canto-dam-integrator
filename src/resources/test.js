@@ -1,9 +1,9 @@
 
 $(document).ready(function(){
-    $("#uploadBtn").change(e => {
-        console.log("uploaded!");
-        console.log(e);
-    });
+    // $("#uploadBtn").change(e => {
+    //     console.log("uploaded!");
+    //     console.log(e);
+    // });
 
     $.cantoUC({
         env: "canto.com",
@@ -13,10 +13,10 @@ function calcImageSize(num) {
     var size = Math.round(Number(num)/1024);
     return size < 1024 ? size + "KB" : Math.round(size/1024) + "MB";
 }
-$("#uploadBtn").change(e => {
-    console.log("uploaded!");
-    console.log(e);
-});
+// $("#uploadBtn").change(e => {
+//     console.log("uploaded!");
+//     console.log(e);
+// });
 
 function replaceCantoTagByImage(id, assetArray){
     var body = $("body");
@@ -44,10 +44,10 @@ function replaceCantoTagByImage(id, assetArray){
     formatDistrict,
     timeStamp;
 
-    $("#uploadBtn").change(e => {
-        console.log("uploaded!");
-        console.log(e);
-    });
+    // $("#uploadBtn").change(e => {
+    //     console.log("uploaded!");
+    //     console.log(e);
+    // });
 
     cantoUC = $.fn[pluginName] = $[pluginName] = function (options, callback) {
         settings(options);
