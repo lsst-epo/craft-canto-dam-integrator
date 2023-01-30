@@ -774,7 +774,8 @@ let treeviewRender = function(data){
 
 function imageResize(){
     let initCount = 8;
-    let totalWidth = totalWidth = Number($("#cantoViewBody").find("#imagesContent")[0].offsetWidth);
+    // let totalWidth = totalWidth = Number($("#cantoViewBody").find("#imagesContent")[0].offsetWidth);
+    let totalWidth = Number($("#cantoViewBody").find("#imagesContent")[0].offsetWidth);
     let singleImageWidth = 0;
     let getCountInALine = function(n){
         singleImageWidth = Number((totalWidth - 8)/n - 2);
@@ -876,7 +877,7 @@ function uploadFileToCanto(e) {
         }).catch(error => {
             console.log(error);
         }).finally(() => {
-            statusBar.innerHTML = "Upload complete - Canto processing...";
+            statusBar.innerHTML = "Uploading - This can take several minutes...";
             checkStatusInterval(e.files[0].name);
         });
     }).catch(error => {

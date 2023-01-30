@@ -1,16 +1,6 @@
 <?php
-/**
- * Universal DAM Integrator plugin for Craft CMS 3.x
- *
- * Some description
- *
- * @link      www.lsst.org
- * @copyright Copyright (c) 2022 Eric Rosas
- */
 
 namespace rosas\dam\migrations;
-
-// use \universaldamintegrator\UniversalDamIntegrator;
 
 use Craft;
 use craft\config\DbConfig;
@@ -32,9 +22,6 @@ use craft\db\Migration;
  */
 class Install extends Migration
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var string The database driver to use
      */

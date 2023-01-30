@@ -49,31 +49,31 @@ class AssetSyncController extends Controller {
     /**
      * DAM Asset upload controller
      */
-    public function actionDamAssetRemoval() {
-        Craft::info("DAM Asset upload removal triggered!", "UDAMI");
-        $elementId = $this->request->getBodyParam('elementId');
-	    $fieldId = $this->request->getBodyParam('fieldId');
+    public function actionDamAssetRemoval($elementId_p = null, $fieldId_p = null) {
+        $elementId = ($elementId_p == null) ? $this->request->getBodyParam('elementId') : $elementId_p;
+	    $fieldId = ($fieldId_p == null) ? $this->request->getBodyParam('fieldId') : $fieldId_p;
         $statusResponse = "";
         $messagesResponse = [];
         
 	    try {
             // First, get assetId from the elementId
-            $assetId = AssetQuery::getAssetIdByElementId($elementId, $fieldId);
+            $assetIds = AssetQuery::getAssetIdsForElementId($elementId, $fieldId);
 
-            if($assetId != null) {
-                // Then, remove asset data
-                $this->actionAssetDeleteWebhook($assetId, $elementId, $fieldId);
+            if($assetIds != null && count($assetIds) > 0) {
+                foreach($assetIds as $id) {
+                    // Then, remove asset data
+                    $this->actionAssetDeleteWebhook($id, $elementId, $fieldId);
 
-                $field = Craft::$app->fields->getFieldByHandle("damAsset");
-                $col_name = ElementHelper::fieldColumnFromField($field);
+                    $field = Craft::$app->fields->getFieldByHandle("damAsset");
+                    $col_name = ElementHelper::fieldColumnFromField($field);
+                    $success = ContentQuery::removeElementId($elementId, $col_name);
 
-                $success = ContentQuery::removeElementId($elementId);
-
-                if($success) {
-                    $statusResponse = "success";
-                } else {
-                    $statusResponse = "error";
-                    array_push($messagesResponse, "There was an error removing the element ID from the the parent entry!");
+                    if($success) {
+                        $statusResponse = "success";
+                    } else {
+                        $statusResponse = "error";
+                        array_push($messagesResponse, "There was an error removing the element ID from the the parent entry!");
+                    }
                 }
             } else {
                 $statusResponse = "error";
@@ -83,6 +83,8 @@ class AssetSyncController extends Controller {
         } catch (\Exception $e) {
             $statusResponse = "error";
             array_push($messagesResponse, "An unknown error occurred while attempting to remove the DAM asset!");
+            Craft::info($e->getMessage(), "UDAMI");
+            Craft::info($e->getTraceAsString(), "UDAMI");
         }
         return Json::encode([
             "status" => $statusResponse,
@@ -99,6 +101,10 @@ class AssetSyncController extends Controller {
         $damId = $this->request->getBodyParam('cantoId');
         $fieldId = $this->request->getBodyParam('fieldId');
 	    $elementId = $this->request->getBodyParam('elementId');
+
+        // First, remove any asset that may be lingering on the element
+        $this->actionDamAssetRemoval($elementId, $fieldId);
+        
         $success = false;
         $response = [
             "canto_id_from_ui" => null,
@@ -121,8 +127,9 @@ class AssetSyncController extends Controller {
             $col_name = ElementHelper::fieldColumnFromField($field);
 
             if(count($metadata) > 0) {
-                $success = ContentQuery::updateElementID($elementId, $assetId);
-            }
+                $success = ContentQuery::updateElementID($elementId, $assetId, $col_name);
+            } 
+
             if($success) {
                 $response = [
                     "canto_id_from_ui" => $damId,
@@ -132,15 +139,15 @@ class AssetSyncController extends Controller {
                 ];
             }
             
-        }
+        } 
         return Json::encode($response);
     }
 
-    /**
+    /** 
      * CREATE webhook controller
      */
     public function actionAssetCreateWebhook() {
-        Craft::info("'Create' webhook triggered!", "Universal DAM Integrator");
+        Craft::info("'Create' webhook triggered!", "UDAMI");
         $damId = $this->request->getBodyParam('id');
         $assetsService = new Assets();
         $res = $assetsService->saveDamAsset($damId);
@@ -151,7 +158,7 @@ class AssetSyncController extends Controller {
      * DELETE webhook controller
      */
     public function actionAssetDeleteWebhook($assetId = null, $elementId = null, $fieldId = null) {
-        Craft::info("'Delete' webhook triggered!", "Universal DAM Integrator");
+        Craft::info("'Delete' webhook triggered!", "UDAMI");
         try {
             $damId = $this->request->getBodyParam('id');
             $ids = ($assetId == null) ? AssetQuery::getAssetIdByDamId($damId) : [$assetId];
@@ -171,7 +178,7 @@ class AssetSyncController extends Controller {
             array_push($messagesResponse, "An unknown error occurred while attempting to remove the DAM asset!");
         }
         
-        Craft::info("'Delete' webhook successful!", "Universal DAM Integrator");
+        Craft::info("'Delete' webhook successful!", "UDAMI");
         return Json::encode([
             "status" => $statusResponse,
             "messages" => $messagesResponse
@@ -194,10 +201,10 @@ class AssetSyncController extends Controller {
                     AssetMetadata::upsert($id, $assetMetadata);
                 }
             } else {
-                Craft::warning("Asset update failed! No Metadata found!", "Universal DAM Integrator");
+                Craft::warning("Asset update failed! No Metadata found!", "UDAMI");
                 return false;
             }
-            Craft::info("'Update' webhook successful!", "Universal DAM Integrator");
+            Craft::info("'Update' webhook successful!", "UDAMI");
             return true;
         } else { // The asset record doesn't exist for some reason, so create it
             $this->actionAssetCreateWebhook();

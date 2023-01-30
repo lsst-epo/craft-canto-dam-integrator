@@ -15,13 +15,27 @@ class AssetQuery {
     const FIELD_ID = "fieldId";
     const DAM_ID = "damId";
 
+    public static function getAssetIdsForElementId($elementId_p, $fieldId = null) {
+        $elementRows = AssetMetadata::find()
+                                    ->where([self::DAM_META_VALUE => $elementId_p, self::DAM_META_KEY => self::ELEMENT_ID])
+                                    ->all();
+        $ids = [];
+
+        foreach($elementRows as $row) {
+            array_push($ids, $row[self::ASSET_ID]);
+            Craft::info("asset ID : " . strval($row[self::ASSET_ID]), "schnooz");
+        }
+
+        return $ids;
+    }
+
     public static function getAssetIdByElementId($elementId_p, $fieldId = null) {
     	$assetId = null;
         $elementRows = AssetMetadata::find()
                                     ->where([self::DAM_META_VALUE => $elementId_p, self::DAM_META_KEY => self::ELEMENT_ID])
                                     ->all();
 
-        if(count($elementRows) > 1) { // multiple DAM assets are associated with this entry, so perform another query based on fieldId if it is not null
+        if(count($elementRows) > 1) { // multiple DAM assets are associated with this entry, so perform another query based on fieldId if it is not null            
             $assetIds = [];
             foreach($elementRows as $row) {
                 array_push($assetIds, $row[self::ASSET_ID]);
@@ -36,7 +50,7 @@ class AssetQuery {
             }
         } else if (count($elementRows) == 1) {
             $assetId = $elementRows[0][self::ASSET_ID];
-        } 
+        }
 
         return $assetId;
     }

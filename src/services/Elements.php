@@ -216,7 +216,6 @@ class Elements extends ElementsService {
                 // Get the element record
                 if (!$isNewElement) {
                     $elementRecord = ElementRecord::findOne($element->id);
-
                     if (!$elementRecord) {
                         $element->firstSave = $originalFirstSave;
                         $element->propagateAll = $originalPropagateAll;

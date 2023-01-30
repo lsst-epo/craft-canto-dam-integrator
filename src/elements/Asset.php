@@ -335,6 +335,8 @@ class Asset extends Element {
             $record->dateModified = $now->format('Y-m-d H:i:s');
 
             $tester = $record->save(true);
+
+
         }
         parent::afterSave($isNew);
     }

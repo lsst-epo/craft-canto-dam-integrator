@@ -43,10 +43,14 @@ $("#fields-remove-dam-asset").click(function(e) {
                 $("#fields-rosas-clicker").html("Add a DAM Asset");
                 $("#fields-dam-asset-preview").hide();
             } else {
+                console.log("logging data!!!");
+                console.log(data);
                 alert("An error occurred while attempting to remove the image, please try again later.");
             }
         },
         error: function(request) {
+            console.log("logging request!!!");
+            console.log(request);
             alert("An error occurred while attempting to remove the image, please try again later.");
         }
     });

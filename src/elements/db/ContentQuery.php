@@ -10,9 +10,9 @@ use craft\helpers\Db;
 
 class ContentQuery {
 
-    public function removeElementId($elementId) {
+    public static function removeElementId($elementId, $col_name) {
         $db = Craft::$app->getDb();
-        $db->createCommand()
+        $result = $db->createCommand()
         ->update('{{content}}',  [
             $col_name  => null
         ],
@@ -22,10 +22,10 @@ class ContentQuery {
         ])
         ->execute();
 
-        
+        return ($result > 0);
     }
 
-    public function updateElementID($elementId, $assetId) {
+    public static function updateElementID($elementId, $assetId, $col_name) {
         // Update the damAsset field with the newly uploaded asset
         $db = Craft::$app->getDb();
         $success = false;
@@ -43,6 +43,8 @@ class ContentQuery {
                 
                 $success = true;
             } catch (\Exception $e) {
+                Craft::info($e->getMessage(), "UDAMI");
+                Craft::info($e->getTraceAsString(), "UDAMI");
                 return $success;
             }
         }
@@ -51,7 +53,7 @@ class ContentQuery {
     
     }
 
-    public function getDamAssetIdByElementId($elementId, $col_name) {
+    public static function getDamAssetIdByElementId($elementId, $col_name) {
         return (new Query())
                         ->select([$col_name])
                         ->from([Table::CONTENT])

@@ -19,7 +19,7 @@ use craft\services\Sections;
 use craft\helpers\ElementHelper;
 
 // DB access
-use rosas\elements\db\ContentQuery;
+use rosas\dam\elements\db\ContentQuery;
 
 class DAMAsset extends AssetField {
 
@@ -83,18 +83,20 @@ class DAMAsset extends AssetField {
         ];
 
         try {
-            if(property_exists($element, "damAsset") && $element->damAsset != null) {
-                $assetId = $this->getDamAssetId($element->id);
-                if($assetId != null && is_array($assetId) && count($assetId) > 0) {
-                    $assetId = $assetId[0];
-                    if($assetId != [] && $assetId != "[]" && is_int(intval($assetId))) { // value will likely come back as string, but may come back as "[]"
-                        $metadata = $this->getAssetMetadataByAssetId($assetId);
-                        $templateVals['assetId'] = $assetId;
-                    } 
+            if(isset($element->damAsset)) {
+                if($element->damAsset != null) {
+                    $assetId = $this->getDamAssetId($element->id);
+                    if($assetId != null && is_array($assetId) && count($assetId) > 0) {
+                        $assetId = $assetId[0];
+                        if($assetId != [] && $assetId != "[]" && is_int(intval($assetId))) { // value will likely come back as string, but may come back as "[]"
+                            $metadata = $this->getAssetMetadataByAssetId($assetId);
+                            $templateVals['assetId'] = $assetId;
+                        } 
+                    }
                 }
             }
         } catch(Exception $e) {
-            Craft::info($e, "error");
+            Craft::info($e->getMessage(), "error");
         }
 
         if(array_key_exists("thumbnailUrl", $metadata)) {
