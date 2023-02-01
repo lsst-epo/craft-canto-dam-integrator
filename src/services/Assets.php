@@ -185,7 +185,7 @@ class Assets extends Component
                 $rows = AssetMetadata::find()
                     ->where(['assetId' => $asset->id, 'dam_meta_key' => 'thumbnailUrl'])
                     ->one();
-                if($rows != null && array_key_exists("dam_meta_value", $rows)) {
+                if($rows != null && isset($rows["dam_meta_value"])) {
                     return str_replace('"', '', $rows['dam_meta_value']);
                 }
             }

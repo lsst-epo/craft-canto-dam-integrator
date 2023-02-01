@@ -14,11 +14,12 @@ use craft\base\FsInterface;
 use craft\fs\MissingFs;
 use yii\base\InvalidConfigException;
 use craft\events\DefineRulesEvent;
+use rosas\dam\fs\CantoFs;
 
 class DAMVolume extends Volume
 {
 
-    public $dummySetting = ""; // Do not remove, Craft expects at least one volume setting for some reason and removing this will break the plugin/volumes
+    public ?string $dummySetting = ""; // Do not remove, Craft expects at least one volume setting for some reason and removing this will break the plugin/volumes
 
     public ?string $handle = "cantoDam";
     private ?string $_fsHandle = "cantoDamFsHandle";
@@ -43,6 +44,18 @@ class DAMVolume extends Volume
     public static function displayName(): string
     {
         return 'Canto DAM'; // return display name from settings
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml(): ?string
+    {
+        Craft::info("Inside of DAMVolume::getSettingsHtml()", "maddie");
+        return Craft::$app->getView()->renderTemplate('_components/fs/Local/settings.twig',
+            [
+                'volume' => $this,
+            ]);
     }
 
     /**

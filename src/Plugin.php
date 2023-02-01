@@ -25,6 +25,8 @@ use craft\services\UserPermissions;
 // Craft 4
 use craft\services\Fs;
 use craft\elements\Asset;
+use rosas\dam\fs\CantoFs;
+// use craft\services\Fs as FsService;
 
 class Plugin extends \craft\base\Plugin
 {
@@ -91,7 +93,7 @@ class Plugin extends \craft\base\Plugin
             Fs::class,
             Fs::EVENT_REGISTER_FILESYSTEM_TYPES,
                 function(RegisterComponentTypesEvent $event) {
-                $event->types[] = DAMVolume::class;
+                $event->types[] = CantoFs::class;
             }
         );
 

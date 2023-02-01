@@ -50,6 +50,7 @@ class AssetSyncController extends Controller {
      * DAM Asset upload controller
      */
     public function actionDamAssetRemoval($elementId_p = null, $fieldId_p = null) {
+        Craft::info("DAM Asset delete triggered!", "UDAMI");
         $elementId = ($elementId_p == null) ? $this->request->getBodyParam('elementId') : $elementId_p;
 	    $fieldId = ($fieldId_p == null) ? $this->request->getBodyParam('fieldId') : $fieldId_p;
         $statusResponse = "";
