@@ -71,7 +71,7 @@ class Assets extends Component
                     }
                 }
             } catch (\Exception $e) {
-                Craft::info($e);
+                Craft::info($e->getMessage(), "UDAMI");
                 return [
                     "status" => "error",
                     "message" => "An error occurred while attempting to fetch the asset from Canto!",
@@ -118,7 +118,8 @@ class Assets extends Component
             $newFolder->parentId = $parentId;
             $newFolder->name = $folderName;
             $newFolder->volumeId = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = Plugin::getInstance()->getSettings()->damVolume)["id"];
-            $parentId = AssetsService::storeFolderRecord($newFolder);
+            $assetsService = new AssetsService();
+            $parentId = $assetsService->storeFolderRecord($newFolder);
             $newFolderRecord = VolumeFolders::getIdsByFolderName($folderName);
             $parentId = $newFolderRecord["id"];
         }
@@ -134,7 +135,8 @@ class Assets extends Component
         $newAsset->avoidFilenameConflicts = true;
         $newAsset->setScenario(Asset::SCENARIO_CREATE);
         $filename = strtolower($this->assetMetadata["url"]["directUrlOriginal"]);
-        $newAsset->filename = str_replace($FILENAME_URL_PREFIX, "", $filename);
+        // Assets::$FILENAME_URL_PREFIX = $GLOBALS["FILENAME_URL_PREFIX"];
+        $newAsset->filename = str_replace("https://rubin.canto.com/direct/", "", $filename);
         $newAsset->kind = "image";
         $newAsset->setHeight($this->assetMetadata["height"]);
         $newAsset->setWidth($this->assetMetadata["width"]);
@@ -150,11 +152,9 @@ class Assets extends Component
         
         $newAsset->firstSave = true;
         $newAsset->propagateAll = false; //changed from true for debugging purposes
-        $now = new DateTime();
-        $newAsset->dateModified = $now->format('Y-m-d H:i:s');
-        $elements = new Elements();
-	
-        $success = $elements->saveElement($newAsset, false, true, true, $this->assetMetadata);
+        $newAsset->dateModified = new DateTime();
+        $elementService = new Elements();
+        $success = $elementService->saveElement($newAsset, false, true, true, $this->assetMetadata);
 
         if($success) {
             return [
@@ -171,11 +171,11 @@ class Assets extends Component
     /**
      * Handle responding to EVENT_GET_ASSET_THUMB_URL events
      *
-     * @param GetAssetThumbUrlEvent $event
+     * @param \craft\events\DefineAssetThumbUrlEvent $event
      *
      * @return null|string
      */
-    public function handleGetAssetThumbUrlEvent(GetAssetThumbUrlEvent $event) {
+    public function handleGetAssetThumbUrlEvent(\craft\events\DefineAssetThumbUrlEvent $event) {
         $url = $event->url;
         $asset = $event->asset;
     
@@ -185,7 +185,7 @@ class Assets extends Component
                 $rows = AssetMetadata::find()
                     ->where(['assetId' => $asset->id, 'dam_meta_key' => 'thumbnailUrl'])
                     ->one();
-                if($rows != null && array_key_exists("dam_meta_value", $rows)) {
+                if($rows != null && isset($rows["dam_meta_value"])) {
                     return str_replace('"', '', $rows['dam_meta_value']);
                 }
             }
@@ -289,7 +289,7 @@ class Assets extends Component
      * @return string|null
      * @throws InvalidConfigException
      */
-    public function getUrl(GetAssetUrlEvent $event)
+    public function getUrl(\craft\events\DefineAssetUrlEvent $event)
     {
         $asset = $event->asset;
         $url = $event->url;

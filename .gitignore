@@ -2,3 +2,4 @@
 vendor
 .env
 tests/_craft/storage/logs/
+/vendor

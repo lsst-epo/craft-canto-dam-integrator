@@ -8,6 +8,7 @@ use craft\base\ElementInterface;
 use craft\helpers\Json;
 use rosas\dam\controllers\AssetSyncController;
 use rosas\dam\db\AssetMetadata;
+use rosas\dam\services\Assets as AssetService;
 use craft\gql\arguments\elements\Asset as AssetArguments;
 use rosas\dam\gql\interfaces\DAMAssetInterface as AssetInterface;
 use rosas\dam\gql\resolvers\DAMAssetResolver as AssetResolver;
@@ -18,24 +19,24 @@ use craft\services\Sections;
 use craft\helpers\ElementHelper;
 
 // DB access
-use rosas\elements\db\ContentQuery;
+use rosas\dam\elements\db\ContentQuery;
 
 class DAMAsset extends AssetField {
 
      /**
      * @inheritdoc
      */
-    protected $settingsTemplate = 'universal-dam-integrator/dam-asset-settings';
+    protected string $settingsTemplate = 'universal-dam-integrator/dam-asset-settings';
 
     /**
      * @inheritdoc
      */
-    protected $inputTemplate = 'universal-dam-integrator/dam-asset';
+    protected string $inputTemplate = 'universal-dam-integrator/dam-asset';
 
     /**
      * @inheritdoc
      */
-    protected $inputJsClass = 'Craft.DamAssetSelectInput';
+    protected ?string $inputJsClass = 'Craft.DamAssetSelectInput';
 
     public function __construct(array $config = []) {
         parent::__construct($config);
@@ -50,7 +51,7 @@ class DAMAsset extends AssetField {
     }
 
     // Pulled from \craft\fields\Assets
-    public function getContentGqlType() {
+    public function getContentGqlType(): \GraphQL\Type\Definition\Type|array {
         return [
             'name' => $this->handle,
             'type' => Type::nonNull(Type::listOf(AssetInterface::getType())),
@@ -60,11 +61,14 @@ class DAMAsset extends AssetField {
         ];
     }
 
-    public function getInputHtml($value, ElementInterface $element = null): string {
+    public function getInputHtml(mixed $value, ?\craft\base\ElementInterface $element = null): string {
         // Get our id and namespace
         $id = Craft::$app->getView()->formatInputId($this->handle);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $metadata = [];
+
+        $assetService = new AssetService();
+        $authToken = $assetService->getAuthToken();
 
         // Render the input template
         $templateVals =             [
@@ -75,21 +79,24 @@ class DAMAsset extends AssetField {
             'id' => $id,
             'element' => Json::encode($element),
             'namespacedId' => $namespacedId,
+            'accessToken' => $authToken
         ];
 
         try {
-            if(property_exists($element, "damAsset") && $element->damAsset != null) {
-                $assetId = $this->getDamAssetId($element->id);
-                if($assetId != null && is_array($assetId) && count($assetId) > 0) {
-                    $assetId = $assetId[0];
-                    if($assetId != [] && $assetId != "[]" && is_int(intval($assetId))) { // value will likely come back as string, but may come back as "[]"
-                        $metadata = $this->getAssetMetadataByAssetId($assetId);
-                        $templateVals['assetId'] = $assetId;
-                    } 
+            if(isset($element->damAsset)) {
+                if($element->damAsset != null) {
+                    $assetId = $this->getDamAssetId($element->id);
+                    if($assetId != null && is_array($assetId) && count($assetId) > 0) {
+                        $assetId = $assetId[0];
+                        if($assetId != [] && $assetId != "[]" && is_int(intval($assetId))) { // value will likely come back as string, but may come back as "[]"
+                            $metadata = $this->getAssetMetadataByAssetId($assetId);
+                            $templateVals['assetId'] = $assetId;
+                        } 
+                    }
                 }
             }
         } catch(Exception $e) {
-            Craft::info($e, "error");
+            Craft::info($e->getMessage(), "error");
         }
 
         if(array_key_exists("thumbnailUrl", $metadata)) {

@@ -216,7 +216,6 @@ class Elements extends ElementsService {
                 // Get the element record
                 if (!$isNewElement) {
                     $elementRecord = ElementRecord::findOne($element->id);
-
                     if (!$elementRecord) {
                         $element->firstSave = $originalFirstSave;
                         $element->propagateAll = $originalPropagateAll;
@@ -562,7 +561,7 @@ class Elements extends ElementsService {
                 $siteElement->setFieldValues($element->getFieldValues());
             } else if (($fieldLayout = $element->getFieldLayout()) !== null) {
                 // Only copy the non-translatable field values
-                foreach ($fieldLayout->getFields() as $field) {
+                foreach ($fieldLayout->getCustomFields() as $field) {
                     // Has this field changed, and does it produce the same translation key as it did for the initial element?
                     if (
                         $element->isFieldDirty($field->handle) &&

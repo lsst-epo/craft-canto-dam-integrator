@@ -187,7 +187,7 @@ class Asset extends Element {
      * @inheritdoc
      * @since 3.3.0
      */
-    public static function gqlScopesByContext($context): array
+    public static function gqlScopesByContext(mixed $context): array
     {
         return ['volumes.' . $context->uid];
     }
@@ -295,7 +295,7 @@ class Asset extends Element {
         return (int)$this->_volumeId ?: null;
     }
 
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if (!$this->propagating) {
             $isCpRequest = Craft::$app->getRequest()->getIsCpRequest();
@@ -335,6 +335,8 @@ class Asset extends Element {
             $record->dateModified = $now->format('Y-m-d H:i:s');
 
             $tester = $record->save(true);
+
+
         }
         parent::afterSave($isNew);
     }

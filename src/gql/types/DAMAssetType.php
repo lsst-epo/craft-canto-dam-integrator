@@ -25,8 +25,8 @@ class DAMAssetType extends ObjectType {
     /**
      * @inheritdoc
      */
-    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo) {
-        if(array_key_exists($resolveInfo->fieldName, $source)) {
+    protected function resolve(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): mixed {
+        if(isset($source[$resolveInfo->fieldName])) {
             return $source[$resolveInfo->fieldName];
         } else if($resolveInfo->fieldName == "damMetadata"){
 	        $metadata = $this->getAssetMetadataByAssetId($source->id);

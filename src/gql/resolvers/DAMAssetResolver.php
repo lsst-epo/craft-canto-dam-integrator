@@ -16,7 +16,7 @@ class DAMAssetResolver extends AssetResolver {
     /**
      * @inheritdoc
      */
-    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo)
+    public static function resolve(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
     {
         $query = self::prepareElementQuery($source, $arguments, $context, $resolveInfo);
         $value = $query instanceof ElementQuery ? $query->all() : $query;
@@ -26,7 +26,7 @@ class DAMAssetResolver extends AssetResolver {
     /**
      *  Based on craft\gql\resolvers\elements\Asset;
      */
-    public static function prepareQuery($source, array $arguments, $fieldName = null)
+    public static function prepareQuery(mixed $source, array $arguments, ?string $fieldName = null): mixed
     {
         // If this is the beginning of a resolver chain, start fresh
         if ($source === null) {
