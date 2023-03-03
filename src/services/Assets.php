@@ -1,6 +1,8 @@
 <?php
 namespace rosas\dam\services;
 
+use craft\errors\InvalidFieldException;
+use craft\events\DefineAssetUrlEvent;
 use \Datetime;
 use Craft;
 use yii\base\Component;
@@ -11,13 +13,21 @@ use craft\helpers\Json;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\models\VolumeFolder;
-use \rosas\dam\Plugin;
+use \rosas\dam\DamPlugin;
 
 // DB access
 use rosas\dam\records\VolumeFolders;
 use rosas\dam\db\AssetMetadata;
 use rosas\dam\elements\db\DAMAssetQuery;
+use yii\base\Exception;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class Assets extends Component
 {
     private static string $FILENAME_URL_PREFIX = "https://rubin.canto.com/direct/";
@@ -26,14 +36,29 @@ class Assets extends Component
 
     private $assetMetadata;
 
+    /**
+     * @param $config
+     */
+    /**
+     * @param $config
+     */
     public function __construct($config = []) {
         parent::__construct($config);
     }
 
+    /**
+     * @return void
+     */
     public function init() {
         parent::init();
     }
 
+    /**
+     * @return array
+     */
+    /**
+     * @return array
+     */
     public function getVolumes() {
         $rawVolumes = Craft::$app->getVolumes()->getAllVolumes();
         $vols = [];
@@ -46,12 +71,26 @@ class Assets extends Component
         return $vols;
     }
 
+    /**
+     * @param $damId
+     * @param $elementId
+     * @param $fieldId
+     * @return array|string[]|void
+     * @throws \Throwable
+     */
+    /**
+     * @param $damId
+     * @param $elementId
+     * @param $fieldId
+     * @return array|string[]|void
+     * @throws \Throwable
+     */
     public function saveDamAsset($damId, $elementId, $fieldId) {
         // Ensure settings are saved before attempting any requests
-        if(isset(\rosas\dam\Plugin::getInstance()->getSettings()->retrieveAssetMetadataEndpoint) &&
-           isset(\rosas\dam\Plugin::getInstance()->getSettings()->authEndpoint) &&
-           isset(\rosas\dam\Plugin::getInstance()->getSettings()->secretKey) &&
-           isset(\rosas\dam\Plugin::getInstance()->getSettings()->appId)) {
+        if(isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->retrieveAssetMetadataEndpoint) &&
+           isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->authEndpoint) &&
+           isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->secretKey) &&
+           isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->appId)) {
             try {
                 $this->authToken = $this->getAuthToken();
                 if($this->authToken != null && !empty($this->authToken)) {
@@ -88,16 +127,26 @@ class Assets extends Component
                 "status" => "error",
                 "message" => "The plugin is configured incorrectly!",
                 "details" => [
-                    "retrieveAssetMetadataEndpointIsSet" => isset(\rosas\dam\Plugin::getInstance()->getSettings()->retrieveAssetMetadataEndpoint),
-                    "authEndpointIsSet" => isset(\rosas\dam\Plugin::getInstance()->getSettings()->authEndpoint),
-                    "secretKeyIsSet" => isset(\rosas\dam\Plugin::getInstance()->getSettings()->secretKey),
-                    "appIdIsSet" => isset(\rosas\dam\Plugin::getInstance()->getSettings()->appId)
+                    "retrieveAssetMetadataEndpointIsSet" => isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->retrieveAssetMetadataEndpoint),
+                    "authEndpointIsSet" => isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->authEndpoint),
+                    "secretKeyIsSet" => isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->secretKey),
+                    "appIdIsSet" => isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->appId)
                 ]
             ];
         }
         
     }
 
+    /**
+     * @param $path
+     * @param $damVolId
+     * @return mixed|null
+     */
+    /**
+     * @param $path
+     * @param $damVolId
+     * @return mixed|null
+     */
     private function _propagateFolders($path, $damVolId) {
         $pathArr = explode('/', $path);
         $parentId = null;
@@ -117,7 +166,7 @@ class Assets extends Component
             }
             $newFolder->parentId = $parentId;
             $newFolder->name = $folderName;
-            $newFolder->volumeId = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = Plugin::getInstance()->getSettings()->damVolume)["id"];
+            $newFolder->volumeId = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = DamPlugin::getInstance()->getSettings()->damVolume)["id"];
             $assetsService = new AssetsService();
             $parentId = $assetsService->storeFolderRecord($newFolder);
             $newFolderRecord = VolumeFolders::getIdsByFolderName($folderName);
@@ -127,8 +176,22 @@ class Assets extends Component
         return $parentId;
     }
 
+    /**
+     * @return string[]
+     * @throws \Throwable
+     * @throws InvalidFieldException
+     * @throws Exception
+     * @throws \yii\db\Exception
+     */
+    /**
+     * @return string[]
+     * @throws Exception
+     * @throws InvalidFieldException
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
     private function saveAssetMetadata() {
-        $damVolume = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = Plugin::getInstance()->getSettings()->damVolume);
+        $damVolume = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = DamPlugin::getInstance()->getSettings()->damVolume);
         $damVolResult = VolumeFolders::getIdsByFolderName($damVolume["name"]);
 
         $newAsset = new Asset();
@@ -179,8 +242,8 @@ class Assets extends Component
         $url = $event->url;
         $asset = $event->asset;
     
-        if(Plugin::getInstance()->getSettings()->damVolume != null) {
-            $settingsVolID = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = Plugin::getInstance()->getSettings()->damVolume)["id"];
+        if(DamPlugin::getInstance()->getSettings()->damVolume != null) {
+            $settingsVolID = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = DamPlugin::getInstance()->getSettings()->damVolume)["id"];
             if($asset->getVolumeId() == $settingsVolID) {
                 $rows = AssetMetadata::find()
                     ->where(['assetId' => $asset->id, 'dam_meta_key' => 'thumbnailUrl'])
@@ -198,7 +261,7 @@ class Assets extends Component
     public function getAssetMetadata($assetId) {
         try {
             $client = Craft::createGuzzleClient();
-            $baseUrl = \rosas\dam\Plugin::getInstance()->getSettings()->getRetrieveAssetMetadataEndpoint();
+            $baseUrl = \rosas\dam\DamPlugin::getInstance()->getSettings()->getRetrieveAssetMetadataEndpoint();
             if(substr($baseUrl, (strlen($baseUrl) - 1), strlen($baseUrl)) != '/') {
                 $baseUrl = $baseUrl . '/';
             }
@@ -232,9 +295,9 @@ class Assets extends Component
      */ 
     public function getAuthToken($validateOnly = false) : string {
         $client = Craft::createGuzzleClient();
-        $appId = \rosas\dam\Plugin::getInstance()->getSettings()->getAppId();
-        $secretKey = \rosas\dam\Plugin::getInstance()->getSettings()->getSecretKey();
-        $authEndpoint = \rosas\dam\Plugin::getInstance()->getSettings()->getAuthEndpoint();
+        $appId = \rosas\dam\DamPlugin::getInstance()->getSettings()->getAppId();
+        $secretKey = \rosas\dam\DamPlugin::getInstance()->getSettings()->getSecretKey();
+        $authEndpoint = \rosas\dam\DamPlugin::getInstance()->getSettings()->getAuthEndpoint();
 
         if($appId != null &&
            $secretKey != null &&
@@ -272,7 +335,7 @@ class Assets extends Component
             Craft::info("An exception occurred in getAuthToken()", "UDAMI");
             return [
                 "status" => "error",
-                'errorMessage' => 'Plugin is not configured to authenticate!'
+                'errorMessage' => 'DamPlugin is not configured to authenticate!'
             ];
         }
 
@@ -281,13 +344,8 @@ class Assets extends Component
     /**
      * Returns the element’s full URL.
      *
-     * @param string|array|null $transform A transform handle or configuration that should be applied to the
-     * image If an array is passed, it can optionally include a `transform` key that defines a base transform
-     * which the rest of the settings should be applied to.
-     * @param bool|null $generateNow Whether the transformed image should be generated immediately if it doesn’t exist. If `null`, it will be left
-     * up to the `generateTransformsBeforePageLoad` config setting.
+     * @param DefineAssetUrlEvent $event
      * @return string|null
-     * @throws InvalidConfigException
      */
     public function getUrl(\craft\events\DefineAssetUrlEvent $event)
     {

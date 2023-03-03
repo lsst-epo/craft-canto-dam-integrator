@@ -4,6 +4,7 @@ namespace rosas\dam\elements\db;
 
 use Craft;
 // use craft\elements\db\AssetQuery;
+use craft\base\ElementInterface;
 use craft\elements\db\ElementQuery;
 use craft\db\Table;
 use craft\db\Query;
@@ -12,6 +13,13 @@ use craft\helpers\ArrayHelper;
 
 use rosas\dam\models\Metadata;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class DAMAssetQuery extends ElementQuery {
 
      /**
@@ -190,16 +198,42 @@ class DAMAssetQuery extends ElementQuery {
      */
     private static $_supportsUploaderParam;
 
+    /**
+     * @param string $elementType
+     * @param array $config
+     * @param $assetId
+     */
+    /**
+     * @param string $elementType
+     * @param array $config
+     * @param $assetId
+     */
     public function __construct(string $elementType, array $config = [], $assetId = null) {
 
         $this->assetId = $assetId;
         parent::__construct($elementType, $config);
     }
-  
+
+    /**
+     * @param $rows
+     * @return array|ElementInterface
+     */
+    /**
+     * @param $rows
+     * @return array
+     */
     public function populate($rows): array {
         return parent::populate($this->normalizeMetadata($rows));
     }
 
+    /**
+     * @param $rows
+     * @return array
+     */
+    /**
+     * @param $rows
+     * @return array
+     */
     public function normalizeMetadata($rows) {
         $normalizedRows = [];
 

@@ -8,10 +8,17 @@ use craft\records\Asset as AssetRecord;
 use craft\base\ElementInterface;
 use craft\base\Element;
 use craft\elements\Asset as AssetElement;
-use rosas\dam\Plugin;
+use rosas\dam\DamPlugin;
 use rosas\dam\elements\db\DAMAssetQuery;
 use craft\elements\db\ElementQueryInterface;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class Asset extends Element {
 //class Asset extends AssetElement {
 
@@ -191,7 +198,13 @@ class Asset extends Element {
     {
         return ['volumes.' . $context->uid];
     }
-    
+
+    /**
+     * @param $config
+     */
+    /**
+     * @param $config
+     */
     public function __construct($config = []) {
         if($config != null) {
             $this->dam_meta_key = (array_key_exists("dam_meta_key", $config)) ? $config["dam_meta_key"] : null ;
@@ -206,6 +219,14 @@ class Asset extends Element {
         parent::__construct();
     }
 
+    /**
+     * @param $el
+     * @return void
+     */
+    /**
+     * @param $el
+     * @return void
+     */
     public function setAsset($el) {
         $this->element = $el;
     }
@@ -295,6 +316,10 @@ class Asset extends Element {
         return (int)$this->_volumeId ?: null;
     }
 
+    /**
+     * @param bool $isNew
+     * @return void
+     */
     public function afterSave(bool $isNew): void
     {
         if (!$this->propagating) {
@@ -320,7 +345,7 @@ class Asset extends Element {
                 $record->id = (int)$this->element->id;
              }
 
-            $damVol = \rosas\dam\Plugin::getInstance()->settings->damVolume;
+            $damVol = \rosas\dam\DamPlugin::getInstance()->settings->damVolume;
 
             $now = new DateTime();
 

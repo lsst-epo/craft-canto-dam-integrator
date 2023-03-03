@@ -8,6 +8,13 @@ use craft\base\Fs;
 use craft\models\FsListing;
 use Generator;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class CantoFs extends Fs {
 
     /**
@@ -81,7 +88,9 @@ class CantoFs extends Fs {
     }
 
     /**
-     * @inheritdoc
+     * @param string $uriPath
+     * @param string $targetPath
+     * @return int
      */
     public function saveFileLocally(string $uriPath, string $targetPath): int
     {

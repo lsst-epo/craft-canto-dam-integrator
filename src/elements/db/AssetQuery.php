@@ -6,6 +6,13 @@ use Craft;
 use rosas\dam\db\AssetMetadata;
 
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class AssetQuery {
 
     const DAM_META_VALUE = "dam_meta_value";
@@ -15,6 +22,16 @@ class AssetQuery {
     const FIELD_ID = "fieldId";
     const DAM_ID = "damId";
 
+    /**
+     * @param $elementId_p
+     * @param $fieldId
+     * @return array
+     */
+    /**
+     * @param $elementId_p
+     * @param $fieldId
+     * @return array
+     */
     public static function getAssetIdsForElementId($elementId_p, $fieldId = null) {
         $elementRows = AssetMetadata::find()
                                     ->where([self::DAM_META_VALUE => $elementId_p, self::DAM_META_KEY => self::ELEMENT_ID])
@@ -29,6 +46,16 @@ class AssetQuery {
         return $ids;
     }
 
+    /**
+     * @param $elementId_p
+     * @param $fieldId
+     * @return mixed|null
+     */
+    /**
+     * @param $elementId_p
+     * @param $fieldId
+     * @return mixed|null
+     */
     public static function getAssetIdByElementId($elementId_p, $fieldId = null) {
     	$assetId = null;
         $elementRows = AssetMetadata::find()
@@ -55,6 +82,14 @@ class AssetQuery {
         return $assetId;
     }
 
+    /**
+     * @param $damId
+     * @return array
+     */
+    /**
+     * @param $damId
+     * @return array
+     */
     public static function getAssetIdByDamId($damId) {
         $rows = AssetMetadata::find()
         ->where([self::DAM_META_VALUE => $damId, self::DAM_META_KEY => self::DAM_ID])

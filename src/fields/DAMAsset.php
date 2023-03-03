@@ -20,7 +20,18 @@ use craft\helpers\ElementHelper;
 
 // DB access
 use rosas\dam\elements\db\ContentQuery;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class DAMAsset extends AssetField {
 
      /**
@@ -38,19 +49,32 @@ class DAMAsset extends AssetField {
      */
     protected ?string $inputJsClass = 'Craft.DamAssetSelectInput';
 
+    /**
+     * @param array $config
+     */
     public function __construct(array $config = []) {
         parent::__construct($config);
     }
 
+    /**
+     * @return string
+     */
     public static function displayName(): string {
         return Craft::t('app', 'DAMAsset');
     }
 
+    /**
+     * @return bool
+     */
     public static function hasContentColumn(): bool {
         return true; // Extended class sets this to false
     }
 
     // Pulled from \craft\fields\Assets
+
+    /**
+     * @return Type|array
+     */
     public function getContentGqlType(): \GraphQL\Type\Definition\Type|array {
         return [
             'name' => $this->handle,
@@ -61,6 +85,15 @@ class DAMAsset extends AssetField {
         ];
     }
 
+    /**
+     * @param mixed $value
+     * @param ElementInterface|null $element
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
+     */
     public function getInputHtml(mixed $value, ?\craft\base\ElementInterface $element = null): string {
         // Get our id and namespace
         $id = Craft::$app->getView()->formatInputId($this->handle);
@@ -106,6 +139,14 @@ class DAMAsset extends AssetField {
         return Craft::$app->getView()->renderTemplate($this->inputTemplate, $templateVals);
     }
 
+    /**
+     * @param $elementId
+     * @return array
+     */
+    /**
+     * @param $elementId
+     * @return array
+     */
     public static function getDamAssetId($elementId) {
         $field = Craft::$app->fields->getFieldByHandle("damAsset");
 	    $col_name = ElementHelper::fieldColumnFromField($field);
@@ -114,6 +155,14 @@ class DAMAsset extends AssetField {
         return $damAssetId;
     }
 
+    /**
+     * @param $assetId
+     * @return array
+     */
+    /**
+     * @param $assetId
+     * @return array
+     */
     public static function getAssetMetadataByAssetId($assetId) {
         $rows = AssetMetadata::find()
                                 ->where(['"assetId"' => $assetId])

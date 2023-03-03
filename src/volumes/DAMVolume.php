@@ -12,10 +12,21 @@ use League\Flysystem\Filesystem;
 // Craft 4
 use craft\base\FsInterface;
 use craft\fs\MissingFs;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use craft\events\DefineRulesEvent;
 use rosas\dam\fs\CantoFs;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class DAMVolume extends Volume
 {
 
@@ -38,8 +49,9 @@ class DAMVolume extends Volume
             $this->trigger(self::EVENT_INIT);
         }
     }
+
     /**
-     * @inheritdoc
+     * @return string
      */
     public static function displayName(): string
     {
@@ -47,7 +59,11 @@ class DAMVolume extends Volume
     }
 
     /**
-     * @inheritdoc
+     * @return string|null
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
     public function getSettingsHtml(): ?string
     {
@@ -66,6 +82,10 @@ class DAMVolume extends Volume
         parent::__construct($config);
     }
 
+    /**
+     * @return FsInterface
+     * @throws InvalidConfigException
+     */
     public function getFs(): FsInterface
     {
         if (!isset($this->_fs)) {

@@ -3,6 +3,7 @@
 namespace rosas\dam\services;
 
 use Craft;
+use craft\errors\InvalidFieldException;
 use craft\services\Elements as ElementsService;
 use craft\base\Element;
 use rosas\dam\elements\Asset;
@@ -20,8 +21,16 @@ use craft\records\Element_SiteSettings as Element_SiteSettingsRecord;
 use craft\events\ElementEvent;
 use craft\helpers\Queue;
 use craft\queue\jobs\UpdateSearchIndex;
+use yii\base\Exception;
 
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class Elements extends ElementsService {
 
     /**
@@ -79,10 +88,12 @@ class Elements extends ElementsService {
      * (this can only be disabled when updating an existing element)
      * @param bool|null $updateSearchIndex Whether to update the element search index for the element
      * (this will happen via a background job if this is a web request)
+     * @param null $assetMetadata
      * @return bool
-     * @throws ElementNotFoundException if $element has an invalid $id
      * @throws Exception if the $element doesn’t have any supported sites
+     * @throws InvalidFieldException
      * @throws \Throwable if reasons
+     * @throws \yii\db\Exception
      */
     public function saveElement(ElementInterface $element, bool $runValidation = true, bool $propagate = true, bool $updateSearchIndex = null, $assetMetadata = null): bool
     {
@@ -107,10 +118,12 @@ class Elements extends ElementsService {
      * @param bool $propagate Whether the element should be saved across all of its supported sites
      * @param bool|null $updateSearchIndex Whether to update the element search index for the element
      * (this will happen via a background job if this is a web request)
+     * @param null $assetMetadata
      * @return bool
-     * @throws ElementNotFoundException if $element has an invalid $id
-     * @throws UnsupportedSiteException if the element is being saved for a site it doesn’t support
+     * @throws Exception
+     * @throws InvalidFieldException
      * @throws \Throwable if reasons
+     * @throws \yii\db\Exception
      */
     private function _saveElementInternal(ElementInterface $element, bool $runValidation = true, bool $propagate = true, bool $updateSearchIndex = null, $assetMetadata = null): bool
     {
@@ -495,13 +508,14 @@ class Elements extends ElementsService {
         return true;
     }
 
-        /**
+    /**
      * Propagates an element to a different site
      *
      * @param ElementInterface $element
      * @param array $siteInfo
-     * @param ElementInterface|false|null $siteElement The element loaded for the propagated site
-     * @throws Exception if the element couldn't be propagated
+     * @param null $siteElement The element loaded for the propagated site
+     * @throws \Throwable
+     * @throws InvalidFieldException
      */
     private function _propagateElement(ElementInterface $element, array $siteInfo, $siteElement = null)
     {

@@ -15,6 +15,13 @@ use rosas\dam\gql\types\generators\DAMAssetGenerator;
 use rosas\dam\elements\Asset;
 use rosas\dam\models\Metadata;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class DAMAssetInterface extends AssetInterface {
 
     /**

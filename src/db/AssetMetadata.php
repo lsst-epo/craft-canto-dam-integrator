@@ -5,7 +5,15 @@ namespace rosas\dam\db;
 use Craft;
 use craft\db\ActiveRecord;
 use craft\helpers\Json;
+use yii\db\Exception;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class AssetMetadata extends ActiveRecord{
     
     /**
@@ -17,6 +25,18 @@ class AssetMetadata extends ActiveRecord{
         return "{{universaldamintegrator_asset_metadata}}";
     }
 
+    /**
+     * @param $id
+     * @param $assetMetadata
+     * @return void
+     * @throws Exception
+     */
+    /**
+     * @param $id
+     * @param $assetMetadata
+     * @return void
+     * @throws Exception
+     */
     public static function upsert($id, $assetMetadata) {
         $db = Craft::$app->getDb();
         foreach(\rosas\dam\models\Constants::ASSET_METADATA_FIELDS as $key => $value) {

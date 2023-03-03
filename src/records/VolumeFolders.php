@@ -5,9 +5,24 @@ namespace rosas\dam\records;
 use Craft;
 use craft\db\Query;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class VolumeFolders {
 
 
+    /**
+     * @param $folderName
+     * @return array|bool|mixed
+     */
+    /**
+     * @param $folderName
+     * @return array|bool|mixed
+     */
     public static function getIdsByFolderName($folderName) {
         $query = new Query;
         return $query->select('id, parentId')

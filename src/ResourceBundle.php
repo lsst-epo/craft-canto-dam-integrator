@@ -5,8 +5,18 @@ namespace rosas\dam;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class ResourceBundle extends AssetBundle
 {
+    /**
+     * @return void
+     */
     public function init()
     {
         // define the path that your publishable resources live

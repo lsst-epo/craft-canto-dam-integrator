@@ -5,6 +5,13 @@ namespace rosas\dam\models;
 use Craft;
 use craft\base\Model;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class Settings extends Model
 {
     
@@ -14,6 +21,9 @@ class Settings extends Model
     public $retrieveAssetMetadataEndpoint;
     public $damVolume;
 
+    /**
+     * @return void
+     */
     public function init(): void {
         parent::init();
     }
@@ -25,22 +35,37 @@ class Settings extends Model
         parent::__construct($config);
     }
 
+    /**
+     * @return string
+     */
     public function getRetrieveAssetMetadataEndpoint(): string {
         return Craft::parseEnv($this->retrieveAssetMetadataEndpoint);
     }
 
+    /**
+     * @return string
+     */
     public function getAuthEndpoint(): string {
         return Craft::parseEnv($this->authEndpoint);
     }
 
+    /**
+     * @return string
+     */
     public function getSecretKey(): string {
         return Craft::parseEnv($this->secretKey);
     }
 
+    /**
+     * @return string
+     */
     public function getAppId(): string {
         return Craft::parseEnv($this->appId);
     }
 
+    /**
+     * @return array[]
+     */
     public function rules(): array
     {
         return [
@@ -48,6 +73,12 @@ class Settings extends Model
         ];
     }
 
+    /**
+     * @return array
+     */
+    /**
+     * @return array
+     */
     public function getVolumes() {
         $rawVolumes = Craft::$app->getVolumes()->getAllVolumes();
         $vols = [];
@@ -64,6 +95,12 @@ class Settings extends Model
         return $vols;
     }
 
+    /**
+     * @return mixed|null
+     */
+    /**
+     * @return mixed|null
+     */
     public function getVolumeId() {
         if($this->damVolume != null) {
             return Craft::$app->getVolumes()->getVolumeByHandle($this->damVolume)["id"];

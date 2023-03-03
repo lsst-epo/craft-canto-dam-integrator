@@ -10,6 +10,13 @@ use craft\helpers\Json;
 use GraphQL\Type\Definition\ResolveInfo;
 use rosas\dam\db\AssetMetadata;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class DAMAssetType extends ObjectType {
     /**
      * @inheritdoc
@@ -42,6 +49,14 @@ class DAMAssetType extends ObjectType {
 
     }
 
+    /**
+     * @param $assetId
+     * @return array
+     */
+    /**
+     * @param $assetId
+     * @return array
+     */
     public static function getAssetMetadataByAssetId($assetId) {
         $rows = AssetMetadata::find()
                                 ->where(['"assetId"' => $assetId])

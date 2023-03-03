@@ -2,16 +2,16 @@
 namespace rosas\dam;
 
 use Craft;
+use craft\base\Model;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
-use craft\services\Volumes;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use yii\base\Event;
 use craft\web\twig\variables\CraftVariable;
-use rosas\dam\volumes\DAMVolume;
 use rosas\dam\services\Assets;
 use rosas\dam\fields\DAMAsset;
-use craft\services\Assets as CraftAssets;
-use yii\base\Behavior;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use rosas\dam\gql\queries\DAMAssetQuery;
@@ -21,20 +21,37 @@ use craft\web\UrlManager;
 use craft\services\Fields;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
+use craft\base\Plugin;
 
 // Craft 4
 use craft\services\Fs;
-use craft\elements\Asset;
 use rosas\dam\fs\CantoFs;
-// use craft\services\Fs as FsService;
+use yii\base\Exception;
 
-class Plugin extends \craft\base\Plugin
+/**
+ *
+ */
+
+/**
+ *
+ */
+class DamPlugin extends Plugin
 {
     // added asset extends
-    public static $plugin;
+    public static Plugin $plugin;
 
     public bool $hasCpSettings = true;
 
+    /**
+     * @param $id
+     * @param $parent
+     * @param array $config
+     */
+    /**
+     * @param $id
+     * @param $parent
+     * @param array $config
+     */
     public function __construct($id, $parent = null, array $config = []) {
         $config["components"] = [
             'assets' => Assets::class
@@ -42,7 +59,10 @@ class Plugin extends \craft\base\Plugin
         parent::__construct($id, $parent, $config);
     }
 
-    public function init()
+    /**
+     * @return void
+     */
+    public function init(): void
     {
         parent::init();
         self::$plugin = $this;
@@ -59,7 +79,7 @@ class Plugin extends \craft\base\Plugin
             function(RegisterUserPermissionsEvent $event) {
                 $event->permissions['Editor'] = [
                     'accessPlugin-universal-dam-integrator' => [
-                        'label' => 'Use DAM Integration Plugin',
+                        'label' => 'Use DAM Integration DamPlugin',
                     ],
                 ];
             }
@@ -84,7 +104,7 @@ class Plugin extends \craft\base\Plugin
                     __METHOD__
                 );
                 // Return the URL to the asset URL or null to let Craft handle it
-                $event->url = Plugin::$plugin->assets->handleGetAssetThumbUrlEvent($event);
+                $event->url = DamPlugin::$plugin->assets->handleGetAssetThumbUrlEvent($event);
             }
         );
 
@@ -102,7 +122,7 @@ class Plugin extends \craft\base\Plugin
             \craft\elements\Asset::class,
             \craft\elements\Asset::EVENT_DEFINE_URL,
                 function(\craft\events\DefineAssetUrlEvent $event) {
-                    $event->url = Plugin::$plugin->assets->getUrl($event);
+                    $event->url = DamPlugin::$plugin->assets->getUrl($event);
                 }
         );
 
@@ -179,6 +199,13 @@ class Plugin extends \craft\base\Plugin
         );
     }
 
+    /**
+     * @return string|null
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
+     */
     protected function settingsHtml(): ?string {
         return \Craft::$app->getView()->renderTemplate(
             'universal-dam-integrator/settings',
@@ -186,6 +213,9 @@ class Plugin extends \craft\base\Plugin
         );
     }
 
+    /**
+     * @return Model|null
+     */
     protected function createSettingsModel(): ?\craft\base\Model
     {
         return new \rosas\dam\models\Settings();

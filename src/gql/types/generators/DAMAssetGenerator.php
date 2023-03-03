@@ -17,6 +17,13 @@ use craft\gql\TypeLoader;
 use craft\gql\TypeManager;
 use craft\gql\base\ObjectType;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class DAMAssetGenerator implements GeneratorInterface
 {
     /**
@@ -49,7 +56,12 @@ class DAMAssetGenerator implements GeneratorInterface
     }
 
     /**
-     * @inheritdoc
+     * @param $context
+     * @return string
+     */
+    /**
+     * @param $context
+     * @return string
      */
     public static function getName($context = null): string
     {
@@ -57,7 +69,12 @@ class DAMAssetGenerator implements GeneratorInterface
     }
 
     /**
-     * @inheritdoc
+     * @param $context
+     * @return ObjectType
+     */
+    /**
+     * @param $context
+     * @return ObjectType
      */
     public static function generateType($context): ObjectType
     {

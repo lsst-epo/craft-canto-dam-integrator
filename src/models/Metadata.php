@@ -8,6 +8,13 @@ use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\Type;
 use craft\gql\TypeManager;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class Metadata extends ObjectType {
 
     public $metadataKey;

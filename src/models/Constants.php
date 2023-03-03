@@ -2,6 +2,13 @@
 
 namespace rosas\dam\models;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class Constants {
 
     const ASSET_METADATA_FIELDS = [

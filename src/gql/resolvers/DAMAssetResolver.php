@@ -11,6 +11,13 @@ use rosas\dam\elements\db\DAMAssetQuery;
 use GraphQL\Type\Definition\ResolveInfo;
 use craft\helpers\Gql as GqlHelper;
 
+/**
+ *
+ */
+
+/**
+ *
+ */
 class DAMAssetResolver extends AssetResolver {
 
     /**
