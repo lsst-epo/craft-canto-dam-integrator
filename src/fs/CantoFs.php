@@ -11,19 +11,7 @@ use Generator;
 /**
  *
  */
-
-/**
- *
- */
 class CantoFs extends Fs {
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
-    }
 
     /**
      * @inheritdoc

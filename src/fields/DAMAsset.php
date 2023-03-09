@@ -6,7 +6,6 @@ use Craft;
 use craft\fields\Assets as AssetField;
 use craft\base\ElementInterface;
 use craft\helpers\Json;
-use rosas\dam\controllers\AssetSyncController;
 use rosas\dam\db\AssetMetadata;
 use rosas\dam\services\Assets as AssetService;
 use craft\gql\arguments\elements\Asset as AssetArguments;
@@ -15,10 +14,7 @@ use rosas\dam\gql\resolvers\DAMAssetResolver as AssetResolver;
 use craft\helpers\Gql as GqlHelper;
 use craft\services\Gql as GqlService;
 use GraphQL\Type\Definition\Type;
-use craft\services\Sections;
 use craft\helpers\ElementHelper;
-
-// DB access
 use rosas\dam\elements\db\ContentQuery;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -27,10 +23,8 @@ use yii\base\Exception;
 
 /**
  *
- */
-
-/**
  *
+ * @property-read Type|array $contentGqlType
  */
 class DAMAsset extends AssetField {
 
@@ -48,13 +42,6 @@ class DAMAsset extends AssetField {
      * @inheritdoc
      */
     protected ?string $inputJsClass = 'Craft.DamAssetSelectInput';
-
-    /**
-     * @param array $config
-     */
-    public function __construct(array $config = []) {
-        parent::__construct($config);
-    }
 
     /**
      * @return string
@@ -75,7 +62,7 @@ class DAMAsset extends AssetField {
     /**
      * @return Type|array
      */
-    public function getContentGqlType(): \GraphQL\Type\Definition\Type|array {
+    public function getContentGqlType(): Type|array {
         return [
             'name' => $this->handle,
             'type' => Type::nonNull(Type::listOf(AssetInterface::getType())),
@@ -147,12 +134,11 @@ class DAMAsset extends AssetField {
      * @param $elementId
      * @return array
      */
-    public static function getDamAssetId($elementId) {
+    public static function getDamAssetId($elementId): array
+    {
         $field = Craft::$app->fields->getFieldByHandle("damAsset");
 	    $col_name = ElementHelper::fieldColumnFromField($field);
-        $damAssetId = ContentQuery::getDamAssetIdByElementId($elementId, $col_name);
-
-        return $damAssetId;
+        return ContentQuery::getDamAssetIdByElementId($elementId, $col_name);
     }
 
     /**
@@ -163,7 +149,8 @@ class DAMAsset extends AssetField {
      * @param $assetId
      * @return array
      */
-    public static function getAssetMetadataByAssetId($assetId) {
+    public static function getAssetMetadataByAssetId($assetId): array
+    {
         $rows = AssetMetadata::find()
                                 ->where(['"assetId"' => $assetId])
                                 ->all();

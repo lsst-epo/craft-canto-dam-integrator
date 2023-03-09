@@ -5,21 +5,12 @@ namespace rosas\dam\gql\types\generators;
 use Craft;
 use rosas\dam\gql\interfaces\DAMAssetInterface;
 use rosas\dam\gql\types\DAMAssetType;
-
 use rosas\dam\elements\Asset as AssetElement;
-use craft\helpers\Gql as GqlHelper;
-
-use craft\gql\base\Generator;
 use craft\gql\base\GeneratorInterface;
-use craft\gql\base\SingleGeneratorInterface;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
 use craft\gql\TypeManager;
 use craft\gql\base\ObjectType;
-
-/**
- *
- */
 
 /**
  *
@@ -59,19 +50,11 @@ class DAMAssetGenerator implements GeneratorInterface
      * @param $context
      * @return string
      */
-    /**
-     * @param $context
-     * @return string
-     */
     public static function getName($context = null): string
     {
         return 'DAMAssetType';
     }
 
-    /**
-     * @param $context
-     * @return ObjectType
-     */
     /**
      * @param $context
      * @return ObjectType

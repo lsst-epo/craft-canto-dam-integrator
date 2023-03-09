@@ -8,16 +8,8 @@ use craft\gql\interfaces\elements\Asset as AssetInterface;
 use craft\gql\TypeManager;
 use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\InterfaceType;
-use craft\gql\types\generators\AssetType;
-use craft\helpers\Json;
-
 use rosas\dam\gql\types\generators\DAMAssetGenerator;
-use rosas\dam\elements\Asset;
 use rosas\dam\models\Metadata;
-
-/**
- *
- */
 
 /**
  *

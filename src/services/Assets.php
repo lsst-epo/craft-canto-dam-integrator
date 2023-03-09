@@ -5,68 +5,52 @@ use craft\errors\InvalidFieldException;
 use craft\events\DefineAssetUrlEvent;
 use \Datetime;
 use Craft;
+use GuzzleHttp\Exception\GuzzleException;
 use yii\base\Component;
 use craft\elements\Asset;
 use craft\services\Assets as AssetsService;
-use rosas\dam\services\Elements;
 use craft\helpers\Json;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\models\VolumeFolder;
-use \rosas\dam\DamPlugin;
-
-// DB access
+use rosas\dam\DamPlugin;
 use rosas\dam\records\VolumeFolders;
 use rosas\dam\db\AssetMetadata;
-use rosas\dam\elements\db\DAMAssetQuery;
 use yii\base\Exception;
 
 /**
  *
- */
-
-/**
  *
+ * @property-read array $volumes
  */
 class Assets extends Component
 {
     private static string $FILENAME_URL_PREFIX = "https://rubin.canto.com/direct/";
 
-    private $authToken;
+    private string $authToken;
 
-    private $assetMetadata;
-
-    /**
-     * @param $config
-     */
-    /**
-     * @param $config
-     */
-    public function __construct($config = []) {
-        parent::__construct($config);
-    }
+    private mixed $assetMetadata;
 
     /**
      * @return void
      */
-    public function init() {
+    public function init(): void
+    {
         parent::init();
     }
 
     /**
      * @return array
      */
-    /**
-     * @return array
-     */
-    public function getVolumes() {
+    public function getVolumes(): array
+    {
         $rawVolumes = Craft::$app->getVolumes()->getAllVolumes();
         $vols = [];
         foreach($rawVolumes as $vol) {
-            array_push($vols, array(
+            $vols[] = array(
                 "name" => $vol["name"],
                 "handle" => $vol["handle"]
-            ));
+            );
         }
         return $vols;
     }
@@ -78,26 +62,19 @@ class Assets extends Component
      * @return array|string[]|void
      * @throws \Throwable
      */
-    /**
-     * @param $damId
-     * @param $elementId
-     * @param $fieldId
-     * @return array|string[]|void
-     * @throws \Throwable
-     */
     public function saveDamAsset($damId, $elementId, $fieldId) {
         // Ensure settings are saved before attempting any requests
-        if(isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->retrieveAssetMetadataEndpoint) &&
-           isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->authEndpoint) &&
-           isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->secretKey) &&
-           isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->appId)) {
+        if(isset(DamPlugin::getInstance()->getSettings()->retrieveAssetMetadataEndpoint,
+                 DamPlugin::getInstance()->getSettings()->authEndpoint,
+                 DamPlugin::getInstance()->getSettings()->secretKey,
+                 DamPlugin::getInstance()->getSettings()->appId)) {
             try {
                 $this->authToken = $this->getAuthToken();
-                if($this->authToken != null && !empty($this->authToken)) {
+                if(!empty($this->authToken)) {
                     $this->assetMetadata = $this->getAssetMetadata($damId);
                     $this->assetMetadata["epo_etc"]["elementId"] = $elementId;
                     $this->assetMetadata["epo_etc"]["fieldId"] = $fieldId;
-                    if(in_array('errorMessage', $this->assetMetadata)) {
+                    if(in_array('errorMessage', $this->assetMetadata, true)) {
                         return [
                             "status" => "error",
                             "message" => "An error occurred while fetching the asset from Canto!",
@@ -142,12 +119,8 @@ class Assets extends Component
      * @param $damVolId
      * @return mixed|null
      */
-    /**
-     * @param $path
-     * @param $damVolId
-     * @return mixed|null
-     */
-    private function _propagateFolders($path, $damVolId) {
+    private function _propagateFolders($path, $damVolId): mixed
+    {
         $pathArr = explode('/', $path);
         $parentId = null;
         foreach($pathArr as $folderName) {
@@ -157,12 +130,8 @@ class Assets extends Component
             // Determine parentId for folder
             if($parentId == null) {
                 $parentId = $damVolId;
-            } else {
-                if($result != null) {
-                    if(array_search($folderName, $pathArr) != (count($pathArr)-1)) {
-                        $parentId = $result["id"];
-                    }
-                }
+            } else if(($result != null) && array_search($folderName, $pathArr) != (count($pathArr) - 1)) {
+                $parentId = $result["id"];
             }
             $newFolder->parentId = $parentId;
             $newFolder->name = $folderName;
@@ -178,19 +147,13 @@ class Assets extends Component
 
     /**
      * @return string[]
-     * @throws \Throwable
-     * @throws InvalidFieldException
-     * @throws Exception
-     * @throws \yii\db\Exception
-     */
-    /**
-     * @return string[]
      * @throws Exception
      * @throws InvalidFieldException
      * @throws \Throwable
      * @throws \yii\db\Exception
      */
-    private function saveAssetMetadata() {
+    private function saveAssetMetadata(): array
+    {
         $damVolume = Craft::$app->getVolumes()->getVolumeByHandle($getAssetMetadataEndpoint = DamPlugin::getInstance()->getSettings()->damVolume);
         $damVolResult = VolumeFolders::getIdsByFolderName($damVolume["name"]);
 
@@ -198,7 +161,6 @@ class Assets extends Component
         $newAsset->avoidFilenameConflicts = true;
         $newAsset->setScenario(Asset::SCENARIO_CREATE);
         $filename = strtolower($this->assetMetadata["url"]["directUrlOriginal"]);
-        // Assets::$FILENAME_URL_PREFIX = $GLOBALS["FILENAME_URL_PREFIX"];
         $newAsset->filename = str_replace("https://rubin.canto.com/direct/", "", $filename);
         $newAsset->kind = "image";
         $newAsset->setHeight($this->assetMetadata["height"]);
@@ -238,7 +200,8 @@ class Assets extends Component
      *
      * @return null|string
      */
-    public function handleGetAssetThumbUrlEvent(\craft\events\DefineAssetThumbUrlEvent $event) {
+    public function handleGetAssetThumbUrlEvent(\craft\events\DefineAssetThumbUrlEvent $event): ?string
+    {
         $url = $event->url;
         $asset = $event->asset;
     
@@ -263,7 +226,7 @@ class Assets extends Component
             $client = Craft::createGuzzleClient();
             $baseUrl = \rosas\dam\DamPlugin::getInstance()->getSettings()->getRetrieveAssetMetadataEndpoint();
             if(substr($baseUrl, (strlen($baseUrl) - 1), strlen($baseUrl)) != '/') {
-                $baseUrl = $baseUrl . '/';
+                $baseUrl .= '/';
             }
             $getAssetMetadataEndpoint = $baseUrl . $assetId;
 
@@ -287,6 +250,7 @@ class Assets extends Component
         } catch (Exception $e) {
             Craft::info("An exception occurred in getAssetMetadata()", "UDAMI");
             return $e;
+        } catch (GuzzleException $e) {
         }
     }
 
@@ -347,12 +311,10 @@ class Assets extends Component
      * @param DefineAssetUrlEvent $event
      * @return string|null
      */
-    public function getUrl(\craft\events\DefineAssetUrlEvent $event)
+    public function getUrl(\craft\events\DefineAssetUrlEvent $event): ?string
     {
         $asset = $event->asset;
-        $url = $event->url;
-
-        return $url;
+        return $event->url;
     }
 
 

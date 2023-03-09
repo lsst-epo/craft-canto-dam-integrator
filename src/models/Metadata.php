@@ -11,15 +11,11 @@ use craft\gql\TypeManager;
 /**
  *
  */
-
-/**
- *
- */
 class Metadata extends ObjectType {
 
-    public $metadataKey;
+    public string $metadataKey;
 
-    public $metadataValue;
+    public string $metadataValue;
 
     public $description = "Key/value metadata for a DAM asset";
 

@@ -12,10 +12,6 @@ use GraphQL\Type\Definition\Type;
 /**
  *
  */
-
-/**
- *
- */
 class DAMAssetQuery extends Query {
 
     /**

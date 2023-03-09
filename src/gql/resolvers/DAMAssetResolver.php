@@ -14,10 +14,6 @@ use craft\helpers\Gql as GqlHelper;
 /**
  *
  */
-
-/**
- *
- */
 class DAMAssetResolver extends AssetResolver {
 
     /**

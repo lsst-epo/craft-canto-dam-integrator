@@ -7,26 +7,18 @@ use craft\base\Model;
 
 /**
  *
- */
-
-/**
  *
+ * @property-read null|mixed $volumeId
+ * @property-read array $volumes
  */
 class Settings extends Model
 {
     
-    public $appId;
-    public $secretKey;
-    public $authEndpoint;
-    public $retrieveAssetMetadataEndpoint;
-    public $damVolume;
-
-    /**
-     * @return void
-     */
-    public function init(): void {
-        parent::init();
-    }
+    public string $appId;
+    public string $secretKey;
+    public string $authEndpoint;
+    public string $retrieveAssetMetadataEndpoint;
+    public mixed $damVolume;
 
     /**
      * @inheritdoc
@@ -76,18 +68,18 @@ class Settings extends Model
     /**
      * @return array
      */
-    public function getVolumes() {
+    public function getVolumes(): array {
         $rawVolumes = Craft::$app->getVolumes()->getAllVolumes();
         $vols = [];
-        array_push($vols, array(
+        $vols[] = array(
             "label" => "- Select Volume -",
             "value" => ""
-        ));
+        );
         foreach($rawVolumes as $vol) {
-            array_push($vols, array(
+            $vols[] = array(
                 "label" => $vol["name"],
                 "value" => $vol["handle"]
-            ));
+            );
         }
         return $vols;
     }
@@ -98,7 +90,8 @@ class Settings extends Model
     /**
      * @return mixed|null
      */
-    public function getVolumeId() {
+    public function getVolumeId(): mixed
+    {
         if($this->damVolume != null) {
             return Craft::$app->getVolumes()->getVolumeByHandle($this->damVolume)["id"];
         } else {

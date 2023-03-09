@@ -25,7 +25,7 @@ class Install extends Migration
     /**
      * @var string The database driver to use
      */
-    public $driver;
+    public string $driver;
 
     // Public Methods
     // =========================================================================
@@ -40,7 +40,7 @@ class Install extends Migration
      * @return boolean return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
@@ -63,7 +63,7 @@ class Install extends Migration
      * @return boolean return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         $this->removeTables();
@@ -79,11 +79,10 @@ class Install extends Migration
      *
      * @return bool
      */
-    protected function createTables()
+    protected function createTables(): bool
     {
         $tablesCreated = false;
 
-    // universaldamintegrator_universaldamintegrator table
         $tableSchema = Craft::$app->db->schema->getTableSchema('{{%universaldamintegrator_asset_metadata}}');
         if ($tableSchema === null) {
             $tablesCreated = true;
@@ -110,9 +109,8 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function createIndexes()
+    protected function createIndexes(): void
     {
-    // universaldamintegrator_universaldamintegrator table
         $this->createIndex(
             $this->db->getIndexName(
                 '{{%universaldamintegrator_asset_metadata}}',
@@ -123,13 +121,6 @@ class Install extends Migration
             'assetId',
             false
         );
-        // Additional commands depending on the db driver
-        switch ($this->driver) {
-            case DbConfig::DRIVER_MYSQL:
-                break;
-            case DbConfig::DRIVER_PGSQL:
-                break;
-        }
     }
 
     /**
@@ -137,9 +128,8 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function addForeignKeys()
+    protected function addForeignKeys(): void
     {
-    // universaldamintegrator_universaldamintegrator table
         $this->addForeignKey(
             $this->db->getForeignKeyName('{{%universaldamintegrator_asset_metadata}}', 'siteId'),
             '{{%universaldamintegrator_asset_metadata}}',
@@ -156,9 +146,8 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function removeTables()
+    protected function removeTables(): void
     {
-    // universaldamintegrator_universaldamintegrator table
         $this->dropTableIfExists('{{%universaldamintegrator_asset_metadata}}');
     }
 }

@@ -14,19 +14,12 @@ use craft\helpers\StringHelper;
 use craft\helpers\ArrayHelper;
 use craft\records\Element as ElementRecord;
 use craft\helpers\Db;
-use craft\helpers\Json;
 use craft\helpers\DateTimeHelper;
 use craft\records\Element_SiteSettings as Element_SiteSettingsRecord;
-
 use craft\events\ElementEvent;
 use craft\helpers\Queue;
 use craft\queue\jobs\UpdateSearchIndex;
 use yii\base\Exception;
-
-
-/**
- *
- */
 
 /**
  *
@@ -37,7 +30,7 @@ class Elements extends ElementsService {
      * @var bool|null Whether we should be updating search indexes for elements if not told explicitly.
      * @since 3.1.2
      */
-    private $_updateSearchIndex;
+    private ?bool $_updateSearchIndex;
 
 
     // Saving Elements
@@ -373,19 +366,19 @@ class Elements extends ElementsService {
             $assetAfterSaver->setAsset($element);
 
             $assetAfterSaver->afterSave($isNewElement);
-            $propagate = false; // Rosas - Disabling propagation for now
-
-            // Update the element across the other sites?
-            if ($propagate) {
-                $element->newSiteIds = [];
-
-                foreach ($supportedSites as $siteInfo) {
-                    // Skip the initial site
-                    if ($siteInfo['siteId'] != $element->siteId) {
-                        $this->_propagateElement($element, $siteInfo, $isNewElement ? false : null);
-                    }
-                }
-            }
+//            $propagate = false; // Rosas - Disabling propagation for now
+//
+//            // Update the element across the other sites?
+//            if ($propagate) {
+//                $element->newSiteIds = [];
+//
+//                foreach ($supportedSites as $siteInfo) {
+//                    // Skip the initial site
+//                    if ($siteInfo['siteId'] != $element->siteId) {
+//                        $this->_propagateElement($element, $siteInfo, $isNewElement ? false : null);
+//                    }
+//                }
+//            }
 
             // It's now fully saved and propagated
             if (
@@ -517,7 +510,7 @@ class Elements extends ElementsService {
      * @throws \Throwable
      * @throws InvalidFieldException
      */
-    private function _propagateElement(ElementInterface $element, array $siteInfo, $siteElement = null)
+    private function _propagateElement(ElementInterface $element, array $siteInfo, $siteElement = null): void
     {
         // Try to fetch the element in this site
         if ($siteElement === null && $element->id) {
