@@ -10,11 +10,7 @@ use yii\db\Exception;
 /**
  *
  */
-
-/**
- *
- */
-class AssetMetadata extends ActiveRecord{
+class AssetMetadata extends ActiveRecord {
     
     /**
      * @inheritdoc
@@ -31,13 +27,8 @@ class AssetMetadata extends ActiveRecord{
      * @return void
      * @throws Exception
      */
-    /**
-     * @param $id
-     * @param $assetMetadata
-     * @return void
-     * @throws Exception
-     */
-    public static function upsert($id, $assetMetadata) {
+    public static function upsert($id, $assetMetadata): void
+    {
         $db = Craft::$app->getDb();
         foreach(\rosas\dam\models\Constants::ASSET_METADATA_FIELDS as $key => $value) {
             $metaVal = "";

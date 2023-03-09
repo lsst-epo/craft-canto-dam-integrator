@@ -3,15 +3,10 @@
 namespace rosas\dam\elements\db;
 
 use Craft;
-use craft\helpers\Json;
 use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\Db;
 use yii\db\Exception;
-
-/**
- *
- */
 
 /**
  *
@@ -30,7 +25,8 @@ class ContentQuery {
      * @return bool
      * @throws Exception
      */
-    public static function removeElementId($elementId, $col_name) {
+    public static function removeElementId($elementId, $col_name): bool
+    {
         $db = Craft::$app->getDb();
         $result = $db->createCommand()
         ->update('{{content}}',  [
@@ -51,13 +47,8 @@ class ContentQuery {
      * @param $col_name
      * @return bool
      */
-    /**
-     * @param $elementId
-     * @param $assetId
-     * @param $col_name
-     * @return bool
-     */
-    public static function updateElementID($elementId, $assetId, $col_name) {
+    public static function updateElementID($elementId, $assetId, $col_name): bool
+    {
         // Update the damAsset field with the newly uploaded asset
         $db = Craft::$app->getDb();
         $success = false;
@@ -90,12 +81,8 @@ class ContentQuery {
      * @param $col_name
      * @return array
      */
-    /**
-     * @param $elementId
-     * @param $col_name
-     * @return array
-     */
-    public static function getDamAssetIdByElementId($elementId, $col_name) {
+    public static function getDamAssetIdByElementId($elementId, $col_name): array
+    {
         return (new Query())
                         ->select([$col_name])
                         ->from([Table::CONTENT])

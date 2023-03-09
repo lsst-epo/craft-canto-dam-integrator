@@ -3,33 +3,26 @@
 namespace rosas\dam\controllers;
 
 use Craft;
-use craft\web\Controller;
-use yii\web\Response;
+use craft\web\Controller;;
 use craft\helpers\Json;
-use craft\records\Asset as AssetRecord;
 use craft\records\Element as ElementRecord;
 use rosas\dam\services\Assets;
 use rosas\dam\db\AssetMetadata;
-use rosas\dam\models\Constants;
 use rosas\dam\fields\DAMAsset;
 use craft\helpers\ElementHelper;
-
-// New imports
 use rosas\dam\elements\db\AssetQuery;
 use rosas\dam\elements\db\ContentQuery;
-
-/**
- *
- */
+use yii\db\Exception;
+use yii\db\StaleObjectException;
 
 /**
  *
  */
 class AssetSyncController extends Controller {
 
-    const ALLOW_ANONYMOUS_NEVER = 0;
-    const ALLOW_ANONYMOUS_LIVE = 1;
-    const ALLOW_ANONYMOUS_OFFLINE = 2;
+    public const ALLOW_ANONYMOUS_NEVER = 0;
+    public const ALLOW_ANONYMOUS_LIVE = 1;
+    public const ALLOW_ANONYMOUS_OFFLINE = 2;
 
     public $enableCsrfValidation = false;
 
@@ -56,7 +49,8 @@ class AssetSyncController extends Controller {
     /**
      * DAM Asset upload controller
      */
-    public function actionDamAssetRemoval($elementId_p = null, $fieldId_p = null) {
+    public function actionDamAssetRemoval($elementId_p = null, $fieldId_p = null): string
+    {
         Craft::info("DAM Asset delete triggered!", "UDAMI");
         $elementId = ($elementId_p == null) ? $this->request->getBodyParam('elementId') : $elementId_p;
 	    $fieldId = ($fieldId_p == null) ? $this->request->getBodyParam('fieldId') : $fieldId_p;
@@ -80,17 +74,17 @@ class AssetSyncController extends Controller {
                         $statusResponse = "success";
                     } else {
                         $statusResponse = "error";
-                        array_push($messagesResponse, "There was an error removing the element ID from the the parent entry!");
+                        $messagesResponse[] = "There was an error removing the element ID from the the parent entry!";
                     }
                 }
             } else {
                 $statusResponse = "error";
-                array_push($messagesResponse, "No asset found for that element and/or field ID!");
+                $messagesResponse[] = "No asset found for that element and/or field ID!";
             }
            
         } catch (\Exception $e) {
             $statusResponse = "error";
-            array_push($messagesResponse, "An unknown error occurred while attempting to remove the DAM asset!");
+            $messagesResponse[] = "An unknown error occurred while attempting to remove the DAM asset!";
             Craft::info($e->getMessage(), "UDAMI");
             Craft::info($e->getTraceAsString(), "UDAMI");
         }
@@ -104,7 +98,8 @@ class AssetSyncController extends Controller {
     /**
      * DAM Asset upload controller
      */
-    public function actionDamAssetUpload() {
+    public function actionDamAssetUpload(): string
+    {
         Craft::info("DAM Asset upload triggered!", "UDAMI");
         $damId = $this->request->getBodyParam('cantoId');
         $fieldId = $this->request->getBodyParam('fieldId');
@@ -122,7 +117,12 @@ class AssetSyncController extends Controller {
         ];
 
         $assetsService = new Assets();
-	    $res = $assetsService->saveDamAsset($damId, $elementId, $fieldId);
+        try {
+            $res = $assetsService->saveDamAsset($damId, $elementId, $fieldId);
+        } catch (\Throwable $e) {
+            Craft::error($e->getMessage(), "UDAMI");
+            return;
+        }
         $assetId = AssetQuery::getAssetIdByElementId($elementId, $fieldId);
 
         if($assetId != null) {
@@ -151,21 +151,31 @@ class AssetSyncController extends Controller {
         return Json::encode($response);
     }
 
-    /** 
+    /**
      * CREATE webhook controller
      */
-    public function actionAssetCreateWebhook() {
+    public function actionAssetCreateWebhook(): string
+    {
         Craft::info("'Create' webhook triggered!", "UDAMI");
         $damId = $this->request->getBodyParam('id');
         $assetsService = new Assets();
-        $res = $assetsService->saveDamAsset($damId);
+        try {
+            $res = $assetsService->saveDamAsset($damId);
+        } catch (\Throwable $e) {
+            Craft::error($e->getMessage(), "UDAMI");
+            return Json::encode([
+                "status" => "error",
+                "message" => "An error occurred while attempting to save the new asset from the 'create' webhook"
+            ]);
+        }
         return Json::encode($res);
     }
 
     /**
      * DELETE webhook controller
      */
-    public function actionAssetDeleteWebhook($assetId = null, $elementId = null, $fieldId = null) {
+    public function actionAssetDeleteWebhook($assetId = null, $elementId = null, $fieldId = null): string
+    {
         Craft::info("'Delete' webhook triggered!", "UDAMI");
         try {
             $damId = $this->request->getBodyParam('id');
@@ -173,17 +183,28 @@ class AssetSyncController extends Controller {
             $statusResponse = "error";
             $messagesResponse = [];
             if ($ids == null || count($ids) == 0) {
-                array_push($messagesResponse, "No assets found with those IDs!");
+                $messagesResponse[] = "No assets found with those IDs!";
             }
             foreach($ids as $id) {
                 // Deleting the element record cascades to the assets record which cascades to the assetMetadata record
                 $element = ElementRecord::findOne($id);
-                $element->delete();
+                try {
+                    $element->delete();
+                } catch (StaleObjectException $e) {
+                    $statusResponse = "error";
+                    $messagesResponse[] = "An error occurred within the DB transaction - likely due to stale DB objects!";
+                    $messagesResponse[] = $e->getMessage();
+                } catch (\Throwable $e) {
+                    $statusResponse = "error";
+                    $messagesResponse[] = "An error occurred within the DB transaction!";
+                    $messagesResponse[] = $e->getMessage();
+                }
                 $statusResponse = "success";
             }
         } catch (\Exception $e) {
             $statusResponse = "error";
-            array_push($messagesResponse, "An unknown error occurred while attempting to remove the DAM asset!");
+            $messagesResponse[] = "An unknown error occurred while attempting to remove the DAM asset!";
+            $messagesResponse[] = $e->getMessage();
         }
         
         Craft::info("'Delete' webhook successful!", "UDAMI");
@@ -196,7 +217,8 @@ class AssetSyncController extends Controller {
     /**
      * UPDATE webhook controller
      */
-    public function actionAssetUpdateWebhook() {
+    public function actionAssetUpdateWebhook(): bool
+    {
         $damId = $this->request->getBodyParam('id');
         $assetsService = new Assets();
         $ids = AssetQuery::getAssetIdByDamId($damId);
@@ -206,7 +228,11 @@ class AssetSyncController extends Controller {
 
             if($assetMetadata != null) {
                 foreach($ids as $id) { // Temporary code! There shouldn't be multiple craft asset records for a single DAM ID, but during dev testing there is
-                    AssetMetadata::upsert($id, $assetMetadata);
+                    try {
+                        AssetMetadata::upsert($id, $assetMetadata);
+                    } catch (Exception $e) {
+
+                    }
                 }
             } else {
                 Craft::warning("Asset update failed! No Metadata found!", "UDAMI");
@@ -218,5 +244,5 @@ class AssetSyncController extends Controller {
             $this->actionAssetCreateWebhook();
         }
     }
-    
+
 }

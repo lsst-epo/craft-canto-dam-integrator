@@ -76,9 +76,6 @@ class Settings extends Model
     /**
      * @return array
      */
-    /**
-     * @return array
-     */
     public function getVolumes() {
         $rawVolumes = Craft::$app->getVolumes()->getAllVolumes();
         $vols = [];

@@ -5,12 +5,15 @@ use Craft;
 use craft\base\Model;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\DefineAssetUrlEvent;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use yii\base\Event;
 use craft\web\twig\variables\CraftVariable;
 use rosas\dam\services\Assets;
+use craft\services\Assets as CraftAssets;
+use craft\elements\Asset as CraftAsset;
 use rosas\dam\fields\DAMAsset;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
@@ -22,6 +25,7 @@ use craft\services\Fields;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
 use craft\base\Plugin;
+use rosas\dam\models\Settings;
 
 // Craft 4
 use craft\services\Fs;
@@ -72,6 +76,15 @@ class DamPlugin extends Plugin
             'assets' => \rosas\dam\services\Assets::class,
         ]);
 
+        $this->createEvents();
+
+    }
+
+    /**
+     * @return void
+     */
+    private function createEvents(): void
+    {
         // Add permission for Editors
         Event::on(
             UserPermissions::class,
@@ -84,20 +97,20 @@ class DamPlugin extends Plugin
                 ];
             }
         );
-        
+
         // Add a tag for the settings page for testing services
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
             /** @var CraftVariable $variable */
             $tag = $e->sender;
-    
+
             // Attach a service:
             $tag->set('metaSave', services\Assets::class);
         });
 
         // Handler: Assets::EVENT_GET_ASSET_THUMB_URL
         Event::on(
-            \craft\services\Assets::class,
-            \craft\services\Assets::EVENT_DEFINE_THUMB_URL,
+            CraftAssets::class,
+            CraftAssets::EVENT_DEFINE_THUMB_URL,
             function (\craft\events\DefineAssetThumbUrlEvent $event) {
                 Craft::debug(
                     '\craft\services\Assets::EVENT_DEFINE_THUMB_URL',
@@ -112,25 +125,25 @@ class DamPlugin extends Plugin
         Event::on(
             Fs::class,
             Fs::EVENT_REGISTER_FILESYSTEM_TYPES,
-                function(RegisterComponentTypesEvent $event) {
+            function(RegisterComponentTypesEvent $event) {
                 $event->types[] = CantoFs::class;
             }
         );
 
-        // Register getAssetUrl event  
+        // Register getAssetUrl event
         Event::on(
-            \craft\elements\Asset::class,
-            \craft\elements\Asset::EVENT_DEFINE_URL,
-                function(\craft\events\DefineAssetUrlEvent $event) {
-                    $event->url = DamPlugin::$plugin->assets->getUrl($event);
-                }
+            CraftAsset::class,
+            CraftAsset::EVENT_DEFINE_URL,
+            function(DefineAssetUrlEvent $event) {
+                $event->url = DamPlugin::$plugin->assets->getUrl($event);
+            }
         );
 
         // Register query for retrieving DAM asset metadata
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_QUERIES,
-            function(RegisterGqlQueriesEvent $event) {                
+            function(RegisterGqlQueriesEvent $event) {
                 $event->queries['enhancedAssetsQuery'] = DAMAssetQuery::getQueries();
             }
         );
@@ -216,8 +229,8 @@ class DamPlugin extends Plugin
     /**
      * @return Model|null
      */
-    protected function createSettingsModel(): ?\craft\base\Model
+    protected function createSettingsModel(): ?Model
     {
-        return new \rosas\dam\models\Settings();
+        return new Settings();
     }
 }
