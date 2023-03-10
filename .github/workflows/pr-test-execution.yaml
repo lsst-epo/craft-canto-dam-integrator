@@ -51,8 +51,8 @@ jobs:
     - name: Install Composer dependencies
       uses: php-actions/composer@v6
       with:
-        php_version: "8.2"
-        php_extensions: zip
+        php_version: "8.1"
+        php_extensions: zip, ext-bcmath
         command: install
 
     # Get secrets
