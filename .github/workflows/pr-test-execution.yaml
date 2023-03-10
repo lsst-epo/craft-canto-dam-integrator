@@ -52,7 +52,7 @@ jobs:
       uses: php-actions/composer@v6
       with:
         php_version: "8.1"
-        php_extensions: zip ext-bcmath
+        php_extensions: zip bcmath
         command: install
         args: --verbose --ignore-platform-reqs
 
