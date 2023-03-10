@@ -52,8 +52,8 @@ jobs:
       uses: php-actions/composer@v6
       with:
         php_version: "8.1"
-        php_extensions: zip ext-bcmath
-        command: install --ignore-platform-req=ext-bcmath
+        php_extensions: ext-bcmath
+        command: install
 
     # Execute those tests
     - name: Execute tests
