@@ -30,7 +30,7 @@ class Elements extends ElementsService {
      * @var bool|null Whether we should be updating search indexes for elements if not told explicitly.
      * @since 3.1.2
      */
-    private ?bool $_updateSearchIndex;
+    private ?bool $_updateSearchIndex = false;
 
 
     // Saving Elements

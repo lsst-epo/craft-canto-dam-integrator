@@ -3,6 +3,7 @@ namespace rosas\dam\services;
 
 use craft\errors\InvalidFieldException;
 use craft\events\DefineAssetUrlEvent;
+use craft\events\DefineAssetThumbUrlEvent;
 use \Datetime;
 use Craft;
 use GuzzleHttp\Exception\GuzzleException;
@@ -196,11 +197,11 @@ class Assets extends Component
     /**
      * Handle responding to EVENT_GET_ASSET_THUMB_URL events
      *
-     * @param \craft\events\DefineAssetThumbUrlEvent $event
+     * @param DefineAssetThumbUrlEvent $event
      *
      * @return null|string
      */
-    public function handleGetAssetThumbUrlEvent(\craft\events\DefineAssetThumbUrlEvent $event): ?string
+    public function handleGetAssetThumbUrlEvent(DefineAssetThumbUrlEvent $event): ?string
     {
         $url = $event->url;
         $asset = $event->asset;
@@ -216,6 +217,7 @@ class Assets extends Component
                 }
             }
         }
+        return null;
     }
 
     /**

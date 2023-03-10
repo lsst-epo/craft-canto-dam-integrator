@@ -121,7 +121,7 @@ class AssetSyncController extends Controller {
             $res = $assetsService->saveDamAsset($damId, $elementId, $fieldId);
         } catch (\Throwable $e) {
             Craft::error($e->getMessage(), "UDAMI");
-            return;
+            return $e->getMessage();
         }
         $assetId = AssetQuery::getAssetIdByElementId($elementId, $fieldId);
 

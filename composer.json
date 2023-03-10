@@ -27,7 +27,8 @@
     },
     "extra": {
       "name": "Universal DAM Integrator",
-      "handle": "universal-dam-integrator"
+      "handle": "universal-dam-integrator",
+      "class": "rosas\\dam\\DamPlugin"
     },
 
     "require-dev": {

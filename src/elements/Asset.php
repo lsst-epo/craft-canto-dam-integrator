@@ -43,10 +43,7 @@ class Asset extends Element {
     public const SCENARIO_REPLACE = 'replace';
     public const SCENARIO_CREATE = 'create';
 
-    /**
-     * @var int|float|null Height
-     */
-    private int|null|float $element;
+    private mixed $element;
 
     /**
      * @var int|null Folder ID
