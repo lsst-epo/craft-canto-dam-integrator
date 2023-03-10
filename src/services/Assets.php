@@ -1,5 +1,5 @@
 <?php
-namespace rosas\dam\services;
+namespace lsst\dam\services;
 
 use craft\errors\InvalidFieldException;
 use craft\events\DefineAssetUrlEvent;
@@ -14,9 +14,9 @@ use craft\helpers\Json;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\models\VolumeFolder;
-use rosas\dam\DamPlugin;
-use rosas\dam\records\VolumeFolders;
-use rosas\dam\db\AssetMetadata;
+use lsst\dam\DamPlugin;
+use lsst\dam\records\VolumeFolders;
+use lsst\dam\db\AssetMetadata;
 use yii\base\Exception;
 
 /**
@@ -105,10 +105,10 @@ class Assets extends Component
                 "status" => "error",
                 "message" => "The plugin is configured incorrectly!",
                 "details" => [
-                    "retrieveAssetMetadataEndpointIsSet" => isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->retrieveAssetMetadataEndpoint),
-                    "authEndpointIsSet" => isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->authEndpoint),
-                    "secretKeyIsSet" => isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->secretKey),
-                    "appIdIsSet" => isset(\rosas\dam\DamPlugin::getInstance()->getSettings()->appId)
+                    "retrieveAssetMetadataEndpointIsSet" => isset(DamPlugin::getInstance()->getSettings()->retrieveAssetMetadataEndpoint),
+                    "authEndpointIsSet" => isset(DamPlugin::getInstance()->getSettings()->authEndpoint),
+                    "secretKeyIsSet" => isset(DamPlugin::getInstance()->getSettings()->secretKey),
+                    "appIdIsSet" => isset(DamPlugin::getInstance()->getSettings()->appId)
                 ]
             ];
         }
@@ -226,7 +226,7 @@ class Assets extends Component
     public function getAssetMetadata($assetId) {
         try {
             $client = Craft::createGuzzleClient();
-            $baseUrl = \rosas\dam\DamPlugin::getInstance()->getSettings()->getRetrieveAssetMetadataEndpoint();
+            $baseUrl = DamPlugin::getInstance()->getSettings()->getRetrieveAssetMetadataEndpoint();
             if(substr($baseUrl, (strlen($baseUrl) - 1), strlen($baseUrl)) != '/') {
                 $baseUrl .= '/';
             }
@@ -261,9 +261,9 @@ class Assets extends Component
      */ 
     public function getAuthToken($validateOnly = false) : string {
         $client = Craft::createGuzzleClient();
-        $appId = \rosas\dam\DamPlugin::getInstance()->getSettings()->getAppId();
-        $secretKey = \rosas\dam\DamPlugin::getInstance()->getSettings()->getSecretKey();
-        $authEndpoint = \rosas\dam\DamPlugin::getInstance()->getSettings()->getAuthEndpoint();
+        $appId = DamPlugin::getInstance()->getSettings()->getAppId();
+        $secretKey = DamPlugin::getInstance()->getSettings()->getSecretKey();
+        $authEndpoint = DamPlugin::getInstance()->getSettings()->getAuthEndpoint();
 
         if($appId != null &&
            $secretKey != null &&

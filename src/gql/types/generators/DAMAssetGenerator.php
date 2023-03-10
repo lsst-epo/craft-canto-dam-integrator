@@ -1,11 +1,11 @@
 <?php
 
-namespace rosas\dam\gql\types\generators;
+namespace lsst\dam\gql\types\generators;
 
 use Craft;
-use rosas\dam\gql\interfaces\DAMAssetInterface;
-use rosas\dam\gql\types\DAMAssetType;
-use rosas\dam\elements\Asset as AssetElement;
+use lsst\dam\gql\interfaces\DAMAssetInterface;
+use lsst\dam\gql\types\DAMAssetType;
+use lsst\dam\elements\Asset as AssetElement;
 use craft\gql\base\GeneratorInterface;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;

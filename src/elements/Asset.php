@@ -1,12 +1,12 @@
 <?php
 
-namespace rosas\dam\elements;
+namespace lsst\dam\elements;
 
 use \Datetime;
 use Craft;
 use craft\records\Asset as AssetRecord;
 use craft\base\Element;
-use rosas\dam\elements\db\DAMAssetQuery;
+use lsst\dam\elements\db\DAMAssetQuery;
 use craft\elements\db\ElementQueryInterface;
 
 /**
@@ -331,7 +331,7 @@ class Asset extends Element {
                 $record->id = (int)$this->element->id;
              }
 
-            $damVol = \rosas\dam\DamPlugin::getInstance()->settings->damVolume;
+            $damVol = \lsst\dam\DamPlugin::getInstance()->settings->damVolume;
 
             $now = new DateTime();
 

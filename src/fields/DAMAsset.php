@@ -1,21 +1,21 @@
 <?php
 
-namespace rosas\dam\fields;
+namespace lsst\dam\fields;
 
 use Craft;
 use craft\fields\Assets as AssetField;
 use craft\base\ElementInterface;
 use craft\helpers\Json;
-use rosas\dam\db\AssetMetadata;
-use rosas\dam\services\Assets as AssetService;
+use lsst\dam\db\AssetMetadata;
+use lsst\dam\services\Assets as AssetService;
 use craft\gql\arguments\elements\Asset as AssetArguments;
-use rosas\dam\gql\interfaces\DAMAssetInterface as AssetInterface;
-use rosas\dam\gql\resolvers\DAMAssetResolver as AssetResolver;
+use lsst\dam\gql\interfaces\DAMAssetInterface as AssetInterface;
+use lsst\dam\gql\resolvers\DAMAssetResolver as AssetResolver;
 use craft\helpers\Gql as GqlHelper;
 use craft\services\Gql as GqlService;
 use GraphQL\Type\Definition\Type;
 use craft\helpers\ElementHelper;
-use rosas\dam\elements\db\ContentQuery;
+use lsst\dam\elements\db\ContentQuery;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;

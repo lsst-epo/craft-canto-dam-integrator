@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam\fs;
+namespace lsst\dam\fs;
 
 use Craft;
 use \Datetime;

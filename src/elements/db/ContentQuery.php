@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam\elements\db;
+namespace lsst\dam\elements\db;
 
 use Craft;
 use craft\db\Query;

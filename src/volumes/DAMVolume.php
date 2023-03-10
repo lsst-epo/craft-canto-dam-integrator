@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam\volumes;
+namespace lsst\dam\volumes;
 
 use Craft;
 use craft\events\DefineBehaviorsEvent;

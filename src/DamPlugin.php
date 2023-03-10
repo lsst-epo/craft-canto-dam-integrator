@@ -1,5 +1,5 @@
 <?php
-namespace rosas\dam;
+namespace lsst\dam;
 
 use Craft;
 use craft\base\Model;
@@ -11,13 +11,13 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use yii\base\Event;
 use craft\web\twig\variables\CraftVariable;
-use rosas\dam\services\Assets;
+use lsst\dam\services\Assets;
 use craft\services\Assets as CraftAssets;
 use craft\elements\Asset as CraftAsset;
-use rosas\dam\fields\DAMAsset;
+use lsst\dam\fields\DAMAsset;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
-use rosas\dam\gql\queries\DAMAssetQuery;
+use lsst\dam\gql\queries\DAMAssetQuery;
 use craft\services\Gql;
 use craft\events\RegisterGqlQueriesEvent;
 use craft\web\UrlManager;
@@ -25,11 +25,11 @@ use craft\services\Fields;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
 use craft\base\Plugin;
-use rosas\dam\models\Settings;
+use lsst\dam\models\Settings;
 
 // Craft 4
 use craft\services\Fs;
-use rosas\dam\fs\CantoFs;
+use lsst\dam\fs\CantoFs;
 use yii\base\Exception;
 
 /**
@@ -73,17 +73,18 @@ class DamPlugin extends Plugin
 
         // Bind Assets service to be scoped to this plugin
         $this->setComponents([
-            'assets' => \rosas\dam\services\Assets::class,
+            'assets' => \lsst\dam\services\Assets::class,
         ]);
 
-        $this->createEvents();
-
+        Craft::$app->onInit(function() {
+            $this->attachEventHandlers();
+        });
     }
 
     /**
      * @return void
      */
-    private function createEvents(): void
+    private function attachEventHandlers(): void
     {
         // Add permission for Editors
         Event::on(

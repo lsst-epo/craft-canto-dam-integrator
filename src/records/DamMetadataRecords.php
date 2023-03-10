@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2022 Eric Rosas
  */
 
-namespace rosas\dam\records;
+namespace lsst\dam\records;
 
 use Craft;
 use craft\db\ActiveRecord;

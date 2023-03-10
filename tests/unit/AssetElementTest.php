@@ -1,11 +1,10 @@
 <?php 
 
-namespace rosas\dam\tests;
+namespace lsst\dam\tests;
 
 use Craft;
 use Codeception\Test\Unit;
-use UnitTester;
-use rosas\dam\elements\Asset;
+use lsst\dam\elements\Asset;
 
 class AssetElementTest extends Unit
 {

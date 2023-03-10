@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam\models;
+namespace lsst\dam\models;
 
 /**
  *

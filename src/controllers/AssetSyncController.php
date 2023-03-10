@@ -1,17 +1,17 @@
 <?php
 
-namespace rosas\dam\controllers;
+namespace lsst\dam\controllers;
 
 use Craft;
 use craft\web\Controller;;
 use craft\helpers\Json;
 use craft\records\Element as ElementRecord;
-use rosas\dam\services\Assets;
-use rosas\dam\db\AssetMetadata;
-use rosas\dam\fields\DAMAsset;
+use lsst\dam\services\Assets;
+use lsst\dam\db\AssetMetadata;
+use lsst\dam\fields\DAMAsset;
 use craft\helpers\ElementHelper;
-use rosas\dam\elements\db\AssetQuery;
-use rosas\dam\elements\db\ContentQuery;
+use lsst\dam\elements\db\AssetQuery;
+use lsst\dam\elements\db\ContentQuery;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 

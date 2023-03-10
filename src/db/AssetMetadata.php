@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam\db;
+namespace lsst\dam\db;
 
 use Craft;
 use craft\db\ActiveRecord;
@@ -30,7 +30,7 @@ class AssetMetadata extends ActiveRecord {
     public static function upsert($id, $assetMetadata): void
     {
         $db = Craft::$app->getDb();
-        foreach(\rosas\dam\models\Constants::ASSET_METADATA_FIELDS as $key => $value) {
+        foreach(\lsst\dam\models\Constants::ASSET_METADATA_FIELDS as $key => $value) {
             $metaVal = "";
             if(array_key_exists($value[0], $assetMetadata)) {
                 $metaVal = $assetMetadata[$value[0]];

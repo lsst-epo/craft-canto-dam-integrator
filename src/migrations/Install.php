@@ -1,9 +1,8 @@
 <?php
 
-namespace rosas\dam\migrations;
+namespace lsst\dam\migrations;
 
 use Craft;
-use craft\config\DbConfig;
 use craft\db\Migration;
 
 /**

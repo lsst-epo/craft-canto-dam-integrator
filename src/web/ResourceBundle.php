@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam;
+namespace lsst\dam\web;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
@@ -8,12 +8,12 @@ use craft\web\assets\cp\CpAsset;
 /**
  *
  */
-class CantoResourceBundle extends AssetBundle
+class ResourceBundle extends AssetBundle
 {
     /**
      * @return void
      */
-    public function init(): void
+    public function init() : void
     {
         // define the path that your publishable resources live
         $this->sourcePath = '@rosas/dam/resources';
@@ -26,7 +26,8 @@ class CantoResourceBundle extends AssetBundle
         // define the relative path to CSS/JS files that should be registered with the page
         // when this asset bundle is registered
         $this->js = [
-            'main.js'
+            'script.js',
+            'test.js'
         ];
 
         $this->css = [

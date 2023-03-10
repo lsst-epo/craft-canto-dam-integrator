@@ -1,9 +1,9 @@
 <?php
 
-namespace rosas\dam\elements\db;
+namespace lsst\dam\elements\db;
 
 use Craft;
-use rosas\dam\db\AssetMetadata;
+use lsst\dam\db\AssetMetadata;
 
 /**
  *

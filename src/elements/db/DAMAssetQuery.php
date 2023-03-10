@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam\elements\db;
+namespace lsst\dam\elements\db;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -10,7 +10,7 @@ use craft\db\Query;
 use craft\helpers\Db;
 use craft\helpers\ArrayHelper;
 
-use rosas\dam\models\Metadata;
+use lsst\dam\models\Metadata;
 
 /**
  *

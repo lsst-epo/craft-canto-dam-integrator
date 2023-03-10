@@ -1,10 +1,10 @@
 <?php
 
-namespace rosas\dam\gql\queries;
+namespace lsst\dam\gql\queries;
 
 use \craft\gql\base\Query;
-use \rosas\dam\gql\interfaces\DAMAssetInterface;
-use \rosas\dam\gql\resolvers\DAMAssetResolver;
+use \lsst\dam\gql\interfaces\DAMAssetInterface;
+use \lsst\dam\gql\resolvers\DAMAssetResolver;
 use craft\helpers\Gql as GqlHelper;
 use craft\gql\arguments\elements\Asset as AssetArguments;
 use GraphQL\Type\Definition\Type;

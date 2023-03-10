@@ -1,12 +1,12 @@
 <?php
 
-namespace rosas\dam\gql\types;
+namespace lsst\dam\gql\types;
 
 use Craft;
-use rosas\dam\gql\interfaces\DAMAssetInterface;
+use lsst\dam\gql\interfaces\DAMAssetInterface;
 use craft\gql\base\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
-use rosas\dam\db\AssetMetadata;
+use lsst\dam\db\AssetMetadata;
 
 /**
  *

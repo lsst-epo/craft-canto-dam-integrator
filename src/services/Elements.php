@@ -1,13 +1,13 @@
 <?php
 
-namespace rosas\dam\services;
+namespace lsst\dam\services;
 
 use Craft;
 use craft\errors\InvalidFieldException;
 use craft\services\Elements as ElementsService;
 use craft\base\Element;
-use rosas\dam\elements\Asset;
-use rosas\dam\db\AssetMetadata;
+use lsst\dam\elements\Asset;
+use lsst\dam\db\AssetMetadata;
 use craft\base\ElementInterface;
 use craft\helpers\ElementHelper;
 use craft\helpers\StringHelper;
