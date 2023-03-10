@@ -18,7 +18,7 @@
       "docs": "https://github.com/lsst-epo/craft3-universal-dam-integrator/blob/main/README.md"
     },
     "require": {
-      "craftcms/cms": "^4.0.0"
+      "craftcms/cms": "^4.4.1"
     },
     "autoload": {
       "psr-4": {
