@@ -53,7 +53,7 @@ jobs:
       with:
         php_version: "8.1"
         php_extensions: zip ext-bcmath
-        command: install
+        command: install --ignore-platform-req=ext-bcmath
 
     # Execute those tests
     - name: Execute tests
