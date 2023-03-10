@@ -18,7 +18,6 @@ use craft\elements\db\ElementQueryInterface;
  * @property-write null|float|int $height
  */
 class Asset extends Element {
-//class Asset extends AssetElement {
 
     /**
      * @var string|null dam_meta_key

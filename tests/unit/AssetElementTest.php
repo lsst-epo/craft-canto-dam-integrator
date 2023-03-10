@@ -6,12 +6,15 @@ use Craft;
 use Codeception\Test\Unit;
 use lsst\dam\elements\Asset;
 
+/**
+ *
+ */
 class AssetElementTest extends Unit
 {
     /**
      * @var \UnitTester
      */
-    protected $tester;
+    protected \UnitTester $tester;
     
     protected function _before()
     {
