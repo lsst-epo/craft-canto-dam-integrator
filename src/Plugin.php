@@ -57,11 +57,13 @@ class Plugin extends \craft\base\Plugin
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
-                $event->permissions['Editor'] = [
+                $event->permissions[] = [
+                    "heading" => "Editor",
+                    "permissions" => [
                     'accessPlugin-universal-dam-integrator' => [
                         'label' => 'Use DAM Integration Plugin',
                     ],
-                ];
+                ]];
             }
         );
         
