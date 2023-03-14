@@ -91,11 +91,14 @@ class DamPlugin extends Plugin
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
-                $event->permissions['Editor'] = [
-                    'accessPlugin-canto-dam-integrator' => [
-                        'label' => 'Use Canto DAM Integration Plugin',
-                    ],
-                ];
+                $event->permissions[] = [
+                    "heading" => "Editor",
+                    "permissions" => [
+                        'accessPlugin-universal-dam-integrator' => [
+                            'label' => 'Use DAM Integration Plugin',
+                            ],
+                        ]
+                    ];
             }
         );
 
