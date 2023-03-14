@@ -16,7 +16,7 @@ class ResourceBundle extends AssetBundle
     public function init() : void
     {
         // define the path that your publishable resources live
-        $this->sourcePath = '@rosas/dam/resources';
+        $this->sourcePath = '@lsst/dam/resources';
 
         // define the dependencies
         $this->depends = [

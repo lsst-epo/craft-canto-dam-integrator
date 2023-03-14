@@ -92,8 +92,8 @@ class DamPlugin extends Plugin
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
                 $event->permissions['Editor'] = [
-                    'accessPlugin-universal-dam-integrator' => [
-                        'label' => 'Use DAM Integration DamPlugin',
+                    'accessPlugin-canto-dam-integrator' => [
+                        'label' => 'Use Canto DAM Integration Plugin',
                     ],
                 ];
             }
@@ -154,7 +154,7 @@ class DamPlugin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/create'] = 'universal-dam-integrator/asset-sync/asset-create-webhook';
+                $event->rules['canto-dam-integrator/create'] = 'canto-dam-integrator/asset-sync/asset-create-webhook';
             }
         );
 
@@ -163,7 +163,7 @@ class DamPlugin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/delete'] = 'universal-dam-integrator/asset-sync/asset-delete-webhook';
+                $event->rules['canto-dam-integrator/delete'] = 'canto-dam-integrator/asset-sync/asset-delete-webhook';
             }
         );
 
@@ -172,7 +172,7 @@ class DamPlugin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/update'] = 'universal-dam-integrator/asset-sync/asset-update-webhook';
+                $event->rules['canto-dam-integrator/update'] = 'canto-dam-integrator/asset-sync/asset-update-webhook';
             }
         );
 
@@ -181,7 +181,7 @@ class DamPlugin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/mass-sync'] = 'universal-dam-integrator/asset-sync/asset-mass-sync-webhook';
+                $event->rules['canto-dam-integrator/mass-sync'] = 'canto-dam-integrator/asset-sync/asset-mass-sync-webhook';
             }
         );
 
@@ -190,7 +190,7 @@ class DamPlugin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/dam-asset-upload'] = 'universal-dam-integrator/asset-sync/dam-asset-upload';
+                $event->rules['canto-dam-integrator/dam-asset-upload'] = 'canto-dam-integrator/asset-sync/dam-asset-upload';
             }
         );
 
@@ -199,7 +199,7 @@ class DamPlugin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/dam-asset-removal'] = 'universal-dam-integrator/asset-sync/dam-asset-removal';
+                $event->rules['canto-dam-integrator/dam-asset-removal'] = 'canto-dam-integrator/asset-sync/dam-asset-removal';
             }
         );
 
@@ -222,7 +222,7 @@ class DamPlugin extends Plugin
      */
     protected function settingsHtml(): ?string {
         return \Craft::$app->getView()->renderTemplate(
-            'universal-dam-integrator/settings',
+            'canto-dam-integrator/settings',
             [ 'settings' => $this->getSettings() ]
         );
     }

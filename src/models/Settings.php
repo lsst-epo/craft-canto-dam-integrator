@@ -14,11 +14,11 @@ use craft\base\Model;
 class Settings extends Model
 {
     
-    public string $appId;
-    public string $secretKey;
-    public string $authEndpoint;
-    public string $retrieveAssetMetadataEndpoint;
-    public mixed $damVolume;
+    public string $appId = "";
+    public string $secretKey = "";
+    public string $authEndpoint = "";
+    public string $retrieveAssetMetadataEndpoint = "";
+    public mixed $damVolume = null;
 
     /**
      * @inheritdoc

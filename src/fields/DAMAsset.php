@@ -31,12 +31,12 @@ class DAMAsset extends AssetField {
      /**
      * @inheritdoc
      */
-    protected string $settingsTemplate = 'universal-dam-integrator/dam-asset-settings';
+    protected string $settingsTemplate = 'canto-dam-integrator/dam-asset-settings';
 
     /**
      * @inheritdoc
      */
-    protected string $inputTemplate = 'universal-dam-integrator/dam-asset';
+    protected string $inputTemplate = 'canto-dam-integrator/dam-asset';
 
     /**
      * @inheritdoc

@@ -31,7 +31,7 @@ $("#fields-remove-dam-asset").click(function(e) {
     let elementId = e.target.dataset.element;
     let assetId = e.target.dataset.asset;
     $.ajax({type:"POST",
-        url: "/universal-dam-integrator/dam-asset-removal", 
+        url: "/canto-dam-integrator/dam-asset-removal",
         dataType:"json", 
         data:{ 
             "elementId": elementId,
@@ -208,7 +208,7 @@ function loadIframeContent(fieldId, elementId, type, accessToken) {
     let cantoLoginPage = "https://oauth.canto.com/oauth/api/oauth2/universal2/authorize?response_type=code&app_id=" + "52ff8ed9d6874d48a3bef9621bc1af26" + "&redirect_uri=http://localhost:8080&state=abcd" + "&code_challenge=" + "1649285048042" + "&code_challenge_method=plain";
 
     console.log("Inside of script.js about to load UC!");
-    var cantoContentPage = "/admin/universal-dam-integrator/cantoContent.html";
+    var cantoContentPage = "/admin/canto-dam-integrator/cantoContent.html";
     if(tokenInfo.accessToken){
         // $("#cantoUCFrame").attr("data-test", val);
         $("#cantoUCFrame").attr("data-element", elementId);

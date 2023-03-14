@@ -8,7 +8,7 @@ use craft\web\assets\cp\CpAsset;
 /**
  *
  */
-class CantoResourceBundle extends AssetB21undle
+class CantoResourceBundle extends AssetBundle
 {
     /**
      * @return void
@@ -16,7 +16,7 @@ class CantoResourceBundle extends AssetB21undle
     public function init(): void
     {
         // define the path that your publishable resources live
-        $this->sourcePath = '@rosas/dam/resources';
+        $this->sourcePath = '@lsst/dam/resources';
 
         // define the dependencies
         $this->depends = [
