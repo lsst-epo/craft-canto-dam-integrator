@@ -1,40 +1,61 @@
 <?php
-namespace rosas\dam;
+namespace lsst\dam;
 
 use Craft;
+use craft\base\Model;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
-use craft\services\Volumes;
+use craft\events\DefineAssetUrlEvent;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use yii\base\Event;
 use craft\web\twig\variables\CraftVariable;
-use rosas\dam\volumes\DAMVolume;
-use rosas\dam\services\Assets;
-use rosas\dam\fields\DAMAsset;
+use lsst\dam\services\Assets;
 use craft\services\Assets as CraftAssets;
-use yii\base\Behavior;
+use craft\elements\Asset as CraftAsset;
+use lsst\dam\fields\DAMAsset;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
-use rosas\dam\gql\queries\DAMAssetQuery;
+use lsst\dam\gql\queries\DAMAssetQuery;
 use craft\services\Gql;
 use craft\events\RegisterGqlQueriesEvent;
 use craft\web\UrlManager;
 use craft\services\Fields;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
+use craft\base\Plugin;
+use lsst\dam\models\Settings;
 
 // Craft 4
 use craft\services\Fs;
-use craft\elements\Asset;
-use rosas\dam\fs\CantoFs;
-// use craft\services\Fs as FsService;
+use lsst\dam\fs\CantoFs;
+use yii\base\Exception;
 
-class Plugin extends \craft\base\Plugin
+/**
+ *
+ */
+
+/**
+ *
+ */
+class DamPlugin extends Plugin
 {
     // added asset extends
-    public static $plugin;
+    public static Plugin $plugin;
 
     public bool $hasCpSettings = true;
 
+    /**
+     * @param $id
+     * @param $parent
+     * @param array $config
+     */
+    /**
+     * @param $id
+     * @param $parent
+     * @param array $config
+     */
     public function __construct($id, $parent = null, array $config = []) {
         $config["components"] = [
             'assets' => Assets::class
@@ -42,16 +63,29 @@ class Plugin extends \craft\base\Plugin
         parent::__construct($id, $parent, $config);
     }
 
-    public function init()
+    /**
+     * @return void
+     */
+    public function init(): void
     {
         parent::init();
         self::$plugin = $this;
 
         // Bind Assets service to be scoped to this plugin
         $this->setComponents([
-            'assets' => \rosas\dam\services\Assets::class,
+            'assets' => \lsst\dam\services\Assets::class,
         ]);
 
+        Craft::$app->onInit(function() {
+            $this->attachEventHandlers();
+        });
+    }
+
+    /**
+     * @return void
+     */
+    private function attachEventHandlers(): void
+    {
         // Add permission for Editors
         Event::on(
             UserPermissions::class,
@@ -60,33 +94,34 @@ class Plugin extends \craft\base\Plugin
                 $event->permissions[] = [
                     "heading" => "Editor",
                     "permissions" => [
-                    'accessPlugin-universal-dam-integrator' => [
-                        'label' => 'Use DAM Integration Plugin',
-                    ],
-                ]];
+                        'accessPlugin-universal-dam-integrator' => [
+                            'label' => 'Use DAM Integration Plugin',
+                            ],
+                        ]
+                    ];
             }
         );
-        
+
         // Add a tag for the settings page for testing services
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
             /** @var CraftVariable $variable */
             $tag = $e->sender;
-    
+
             // Attach a service:
             $tag->set('metaSave', services\Assets::class);
         });
 
         // Handler: Assets::EVENT_GET_ASSET_THUMB_URL
         Event::on(
-            \craft\services\Assets::class,
-            \craft\services\Assets::EVENT_DEFINE_THUMB_URL,
+            CraftAssets::class,
+            CraftAssets::EVENT_DEFINE_THUMB_URL,
             function (\craft\events\DefineAssetThumbUrlEvent $event) {
                 Craft::debug(
                     '\craft\services\Assets::EVENT_DEFINE_THUMB_URL',
                     __METHOD__
                 );
                 // Return the URL to the asset URL or null to let Craft handle it
-                $event->url = Plugin::$plugin->assets->handleGetAssetThumbUrlEvent($event);
+                $event->url = DamPlugin::$plugin->assets->handleGetAssetThumbUrlEvent($event);
             }
         );
 
@@ -94,25 +129,25 @@ class Plugin extends \craft\base\Plugin
         Event::on(
             Fs::class,
             Fs::EVENT_REGISTER_FILESYSTEM_TYPES,
-                function(RegisterComponentTypesEvent $event) {
+            function(RegisterComponentTypesEvent $event) {
                 $event->types[] = CantoFs::class;
             }
         );
 
-        // Register getAssetUrl event  
+        // Register getAssetUrl event
         Event::on(
-            \craft\elements\Asset::class,
-            \craft\elements\Asset::EVENT_DEFINE_URL,
-                function(\craft\events\DefineAssetUrlEvent $event) {
-                    $event->url = Plugin::$plugin->assets->getUrl($event);
-                }
+            CraftAsset::class,
+            CraftAsset::EVENT_DEFINE_URL,
+            function(DefineAssetUrlEvent $event) {
+                $event->url = DamPlugin::$plugin->assets->getUrl($event);
+            }
         );
 
         // Register query for retrieving DAM asset metadata
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_QUERIES,
-            function(RegisterGqlQueriesEvent $event) {                
+            function(RegisterGqlQueriesEvent $event) {
                 $event->queries['enhancedAssetsQuery'] = DAMAssetQuery::getQueries();
             }
         );
@@ -122,7 +157,7 @@ class Plugin extends \craft\base\Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/create'] = 'universal-dam-integrator/asset-sync/asset-create-webhook';
+                $event->rules['canto-dam-integrator/create'] = 'canto-dam-integrator/asset-sync/asset-create-webhook';
             }
         );
 
@@ -131,7 +166,7 @@ class Plugin extends \craft\base\Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/delete'] = 'universal-dam-integrator/asset-sync/asset-delete-webhook';
+                $event->rules['canto-dam-integrator/delete'] = 'canto-dam-integrator/asset-sync/asset-delete-webhook';
             }
         );
 
@@ -140,7 +175,7 @@ class Plugin extends \craft\base\Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/update'] = 'universal-dam-integrator/asset-sync/asset-update-webhook';
+                $event->rules['canto-dam-integrator/update'] = 'canto-dam-integrator/asset-sync/asset-update-webhook';
             }
         );
 
@@ -149,7 +184,7 @@ class Plugin extends \craft\base\Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/mass-sync'] = 'universal-dam-integrator/asset-sync/asset-mass-sync-webhook';
+                $event->rules['canto-dam-integrator/mass-sync'] = 'canto-dam-integrator/asset-sync/asset-mass-sync-webhook';
             }
         );
 
@@ -158,7 +193,7 @@ class Plugin extends \craft\base\Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/dam-asset-upload'] = 'universal-dam-integrator/asset-sync/dam-asset-upload';
+                $event->rules['canto-dam-integrator/dam-asset-upload'] = 'canto-dam-integrator/asset-sync/dam-asset-upload';
             }
         );
 
@@ -167,7 +202,7 @@ class Plugin extends \craft\base\Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['universal-dam-integrator/dam-asset-removal'] = 'universal-dam-integrator/asset-sync/dam-asset-removal';
+                $event->rules['canto-dam-integrator/dam-asset-removal'] = 'canto-dam-integrator/asset-sync/dam-asset-removal';
             }
         );
 
@@ -181,15 +216,25 @@ class Plugin extends \craft\base\Plugin
         );
     }
 
+    /**
+     * @return string|null
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
+     */
     protected function settingsHtml(): ?string {
         return \Craft::$app->getView()->renderTemplate(
-            'universal-dam-integrator/settings',
+            'canto-dam-integrator/settings',
             [ 'settings' => $this->getSettings() ]
         );
     }
 
-    protected function createSettingsModel(): ?\craft\base\Model
+    /**
+     * @return Model|null
+     */
+    protected function createSettingsModel(): ?Model
     {
-        return new \rosas\dam\models\Settings();
+        return new Settings();
     }
 }

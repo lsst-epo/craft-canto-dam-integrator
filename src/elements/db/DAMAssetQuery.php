@@ -1,17 +1,20 @@
 <?php
 
-namespace rosas\dam\elements\db;
+namespace lsst\dam\elements\db;
 
 use Craft;
-// use craft\elements\db\AssetQuery;
+use craft\base\ElementInterface;
 use craft\elements\db\ElementQuery;
 use craft\db\Table;
 use craft\db\Query;
 use craft\helpers\Db;
 use craft\helpers\ArrayHelper;
 
-use rosas\dam\models\Metadata;
+use lsst\dam\models\Metadata;
 
+/**
+ *
+ */
 class DAMAssetQuery extends ElementQuery {
 
      /**
@@ -33,25 +36,25 @@ class DAMAssetQuery extends ElementQuery {
      * ```
      * @used-by height()
      */
-    public $height;
+    public mixed $height;
 
     /**
      * @var mixed The size (in bytes) that the resulting assets must have.
      * @used-by size()
      */
-    public $size;
+    public mixed $size;
 
     /**
      * @var mixed The Date Modified that the resulting assets must have.
      * @used-by dateModified()
      */
-    public $dateModified;
+    public mixed $dateModified;
 
     /**
      * @var bool Whether the query should search the subfolders of [[folderId]].
      * @used-by includeSubfolders()
      */
-    public $includeSubfolders = false;
+    public bool $includeSubfolders = false;
 
     /**
      * @var string|array|null The asset transform indexes that should be eager-loaded, if they exist
@@ -72,7 +75,7 @@ class DAMAssetQuery extends ElementQuery {
      * ```
      * @used-by withTransforms()
      */
-    public $withTransforms;
+    public string|array|null $withTransforms;
 
     /**
      * @var string|string[]|null The file kind(s) that the resulting assets must be.
@@ -114,7 +117,7 @@ class DAMAssetQuery extends ElementQuery {
      * ```
      * @used-by kind()
      */
-    public $kind;
+    public string|array|null $kind;
 
     /**
      * @var mixed The width (in pixels) that the resulting assets must have.
@@ -135,7 +138,7 @@ class DAMAssetQuery extends ElementQuery {
      * ```
      * @used-by width()
      */
-    public $width;
+    public mixed $width;
 
     
     /**
@@ -156,51 +159,78 @@ class DAMAssetQuery extends ElementQuery {
      * @used-by volume()
      * @used-by volumeId()
      */
-    public $volumeId;
+    public string|int|array|null $volumeId;
 
     /**
      * @var int|int[]|null The asset folder ID(s) that the resulting assets must be in.
      * @used-by folderId()
      */
-    public $folderId;
+    public array|int|null $folderId;
 
     /**
      * @var int|null The user ID that the resulting assets must have been uploaded by.
      * @used-by uploader()
      * @since 3.4.0
      */
-    public $uploaderId;
+    public ?int $uploaderId;
 
     /**
      * @var string|string[]|null The filename(s) that the resulting assets must have.
      * @used-by filename()
      */
-    public $filename;
+    public string|array|null $filename;
 
     /**
      * Container for holding key-value
      */
-    public $assetMetadata = [];
+    public array $assetMetadata = [];
 
-    public $assetId;
+    public mixed $assetId;
 
     /**
      * @var bool
      * @see _supportsUploaderParam()
      */
-    private static $_supportsUploaderParam;
+    private static bool $_supportsUploaderParam;
 
+    /**
+     * @param string $elementType
+     * @param array $config
+     * @param $assetId
+     */
+    /**
+     * @param string $elementType
+     * @param array $config
+     * @param $assetId
+     */
     public function __construct(string $elementType, array $config = [], $assetId = null) {
 
         $this->assetId = $assetId;
         parent::__construct($elementType, $config);
     }
-  
+
+    /**
+     * @param $rows
+     * @return array|ElementInterface
+     */
+    /**
+     * @param $rows
+     * @return array
+     */
     public function populate($rows): array {
         return parent::populate($this->normalizeMetadata($rows));
     }
 
-    public function normalizeMetadata($rows) {
+    /**
+     * @param $rows
+     * @return array
+     */
+    /**
+     * @param $rows
+     * @return array
+     */
+    public function normalizeMetadata($rows): array
+    {
         $normalizedRows = [];
 
         $prevId = null;
@@ -208,7 +238,7 @@ class DAMAssetQuery extends ElementQuery {
         foreach ($rows as $row) {
             if($row['id'] != $prevId) {
                 if($currArr != null && $prevId != null) {
-                    array_push($normalizedRows, $currArr);
+                    $normalizedRows[] = $currArr;
                 }
                 $prevId = $row['id'];
                 $currArr = $row;
@@ -225,7 +255,7 @@ class DAMAssetQuery extends ElementQuery {
                     $meta->metadataKey = $row["dam_meta_key"];
                     $meta->metadataValue = $row["dam_meta_value"];
                     $currArr["assetId"] = $row["assetId"]; // To-do: Come up with a better workflow so the UI doesn't have to sort this out
-                    array_push($currArr["damMetadata"], $meta);
+                    $currArr["damMetadata"][] = $meta;
                 }
             }
         }
@@ -236,7 +266,6 @@ class DAMAssetQuery extends ElementQuery {
      * Returns whether the `uploader` param is supported yet.
      *
      * @return bool
-     * @todo remove after next beakpoint
      */
     private static function _supportsUploaderParam(): bool
     {
@@ -245,13 +274,13 @@ class DAMAssetQuery extends ElementQuery {
         }
 
         $schemaVersion = Craft::$app->getInstalledSchemaVersion();
-        return self::$_supportsUploaderParam = version_compare($schemaVersion, '3.4.5', '>=');
+        return self::$_supportsUploaderParam = version_compare($schemaVersion, '4.0.0', '>=');
     }
     
     /**
      * Normalizes the volumeId param to an array of IDs or null
      */
-    private function _normalizeVolumeId()
+    private function _normalizeVolumeId(): void
     {
         if ($this->volumeId === ':empty:') {
             return;

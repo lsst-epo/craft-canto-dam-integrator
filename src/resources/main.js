@@ -240,7 +240,7 @@ cantoAPI.insertImage = function(imageArray){
                 }
             }
         }
-        fetch("/universal-dam-integrator/dam-asset-upload", {
+        fetch("/canto-dam-integrator/dam-asset-upload", {
             method: "post",
             headers: { "Content-Type" : "application/json; charset=utf-8" },
             body: JSON.stringify({

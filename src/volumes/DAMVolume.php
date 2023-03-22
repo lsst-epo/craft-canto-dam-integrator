@@ -1,21 +1,26 @@
 <?php
 
-namespace rosas\dam\volumes;
+namespace lsst\dam\volumes;
 
 use Craft;
-// use craft\base\Volume;
 use craft\events\DefineBehaviorsEvent;
 use craft\models\Volume;
 use craft\base\FlysystemVolume;
 use League\Flysystem\Filesystem;
-
-// Craft 4
 use craft\base\FsInterface;
 use craft\fs\MissingFs;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use craft\events\DefineRulesEvent;
-use rosas\dam\fs\CantoFs;
 
+/**
+ *
+ *
+ * @property-read null|string $settingsHtml
+ */
 class DAMVolume extends Volume
 {
 
@@ -24,9 +29,7 @@ class DAMVolume extends Volume
     public ?string $handle = "cantoDam";
     private ?string $_fsHandle = "cantoDamFsHandle";
 
-    // public function init() {
-    //     parent::init();
-    // }
+
     /**
      * @inheritdoc
      */
@@ -38,8 +41,9 @@ class DAMVolume extends Volume
             $this->trigger(self::EVENT_INIT);
         }
     }
+
     /**
-     * @inheritdoc
+     * @return string
      */
     public static function displayName(): string
     {
@@ -47,7 +51,11 @@ class DAMVolume extends Volume
     }
 
     /**
-     * @inheritdoc
+     * @return string|null
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
     public function getSettingsHtml(): ?string
     {
@@ -59,13 +67,9 @@ class DAMVolume extends Volume
     }
 
     /**
-     * @inheritdoc
+     * @return FsInterface
+     * @throws InvalidConfigException
      */
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
-    }
-
     public function getFs(): FsInterface
     {
         if (!isset($this->_fs)) {
@@ -119,71 +123,5 @@ class DAMVolume extends Volume
 
         return $event->rules;
     }
-
-    // /**
-    //  * @inheritdoc
-    //  */
-    // protected function addFileMetadataToConfig(array $config): array
-    // {
-    //     return parent::addFileMetadataToConfig($config);
-    // }
-
-    // // Beginning of inherited class declaration
-
-    // protected function filesystem(array $config = []): Filesystem
-    // {
-    //     // Constructing a Filesystem is super cheap and we always get the config we want, so no caching.
-    //     return new Filesystem($this->adapter(), new Config($config));
-    // }
-
-    // public function getFileMetadata(string $uri): array {
-    //     return parent::getFileSize($uri);
-    // }
-
-    // public function getFileSize(string $uri): ?int {
-    //     return parent::getFileSize($uri);
-    // }
-
-    // public function getDateModified(string $uri): ?int {
-    //     return parent::getDateModified($uri);
-    // }
-
-    // public function createFileByStream(string $path, $stream, array $config) {
-    //     return parent::createFileByStream($path, $stream, $config);
-    // }
-
-    // public function updateFileByStream(string $path, $stream, array $config) {
-    //     return parent::updateFileByStream($path, $stream, $config);
-    // }
-
-    // public function fileExists(string $path): bool {
-    //     return parent::fileExists($path);
-    // }
-
-    // public function deleteFile(string $path) {
-    //     return parent::deleteFile($path);
-    // }
-
-    // public function renameFile(string $path, string $newPath) {
-    //     return parent::renameFile($path, $newPath);
-    // }
-
-    // public function copyFile(string $path, string $newPath) {
-    //     return parent::copyFile($path, $newPath);
-    // }
-
-    // public function saveFileLocally(string $uriPath, string $targetPath): int {
-    //     return parent::saveFileLocally($uriPath, $targetPath);
-    // }
-
-    // public function getFileStream(string $uriPath) {
-    //     return parent::getFileStream($uriPath);
-    // }
-
-    // public function getFileList(string $directory, bool $recursive): array {
-    //     return parent::getFileList($directory, $recursive);
-    // }
-
-    // End of inherited class declaration
 
 }

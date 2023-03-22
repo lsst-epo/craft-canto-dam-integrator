@@ -1,15 +1,16 @@
 <?php
 
-namespace rosas\dam\gql\types;
+namespace lsst\dam\gql\types;
 
 use Craft;
-use rosas\dam\gql\interfaces\DAMAssetInterface;
-use rosas\dam\fields\DAMAsset;
+use lsst\dam\gql\interfaces\DAMAssetInterface;
 use craft\gql\base\ObjectType;
-use craft\helpers\Json;
 use GraphQL\Type\Definition\ResolveInfo;
-use rosas\dam\db\AssetMetadata;
+use lsst\dam\db\AssetMetadata;
 
+/**
+ *
+ */
 class DAMAssetType extends ObjectType {
     /**
      * @inheritdoc
@@ -29,12 +30,10 @@ class DAMAssetType extends ObjectType {
         if(isset($source[$resolveInfo->fieldName])) {
             return $source[$resolveInfo->fieldName];
         } else if($resolveInfo->fieldName == "damMetadata"){
-	        $metadata = $this->getAssetMetadataByAssetId($source->id);
-            return $metadata;
+            return $this->getAssetMetadataByAssetId($source->id);
         } else {
             try {
-                $resolvedValue = $source[$resolveInfo->fieldName];
-                return $resolvedValue;
+                return $source[$resolveInfo->fieldName];
             } catch (Exception $e) {
                 return null;
             }
@@ -42,7 +41,12 @@ class DAMAssetType extends ObjectType {
 
     }
 
-    public static function getAssetMetadataByAssetId($assetId) {
+    /**
+     * @param $assetId
+     * @return array
+     */
+    public static function getAssetMetadataByAssetId($assetId): array
+    {
         $rows = AssetMetadata::find()
                                 ->where(['"assetId"' => $assetId])
                                 ->all();
@@ -53,7 +57,7 @@ class DAMAssetType extends ObjectType {
 		    $metadataRow = [];
             $metadataRow["metadataKey"] = $row["dam_meta_key"];
             $metadataRow["metadataValue"] = $row["dam_meta_value"];
-            array_push($res, $metadataRow);
+            $res[] = $metadataRow;
         }
         return $res;
     }

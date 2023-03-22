@@ -1,187 +1,187 @@
 <?php
 
-namespace rosas\dam\elements;
+namespace lsst\dam\elements;
 
 use \Datetime;
 use Craft;
 use craft\records\Asset as AssetRecord;
-use craft\base\ElementInterface;
 use craft\base\Element;
-use craft\elements\Asset as AssetElement;
-use rosas\dam\Plugin;
-use rosas\dam\elements\db\DAMAssetQuery;
+use lsst\dam\elements\db\DAMAssetQuery;
 use craft\elements\db\ElementQueryInterface;
 
+/**
+ *
+ *
+ * @property-write null|float|int $width
+ * @property-read null|int $volumeId
+ * @property-write mixed $asset
+ * @property-write null|float|int $height
+ */
 class Asset extends Element {
-//class Asset extends AssetElement {
 
     /**
      * @var string|null dam_meta_key
      */
-    public $dam_meta_key;
+    public mixed $dam_meta_key;
 
-    public $assetId;
+    public mixed $assetId;
 
-    public $asset_id;
+    public mixed $asset_id;
 
-    public $dam_meta_value;
+    public mixed $dam_meta_value;
 
-    public $damMetadata;
+    public mixed $damMetadata;
 
-    public $thumbnailUrl;
+    public string $thumbnailUrl;
 
     /**
      * Validation scenario that should be used when the asset is only getting *moved*; not renamed.
      *
      * @since 3.7.1
      */
-    const SCENARIO_REPLACE = 'replace';
-    const SCENARIO_CREATE = 'create';
+    public const SCENARIO_REPLACE = 'replace';
+    public const SCENARIO_CREATE = 'create';
 
-    /**
-     * @var int|float|null Height
-     */
-    private $element;
+    private mixed $element;
 
     /**
      * @var int|null Folder ID
      */
-    public $folderId;
+    public ?int $folderId;
 
     /**
      * @var int|null The ID of the user who first added this asset (if known)
      */
-    public $uploaderId;
+    public ?int $uploaderId;
 
     /**
      * @var string|null Folder path
      */
-    public $folderPath;
+    public ?string $folderPath;
 
     /**
      * @var string|null Filename
-     * @todo rename to private $_basename w/ getter & setter in 4.0; and getFilename() should not include the extension (to be like PATHINFO_FILENAME). We can add a getBasename() for getting the whole thing.
      */
-    public $filename;
+    public ?string $filename;
 
     /**
      * @var string|null Kind
      */
-    public $kind;
+    public ?string $kind;
 
     /**
      * @var int|null Size
      */
-    public $size;
+    public ?int $size;
 
     /**
      * @var bool|null Whether the file was kept around when the asset was deleted
      */
-    public $keptFile;
+    public ?bool $keptFile;
 
     /**
      * @var \DateTime|null Date modified
      */
-    public $dateModified;
+    public ?DateTime $dateModified;
 
     /**
      * @var string|null New file location
      */
-    public $newLocation;
+    public ?string $newLocation;
 
     /**
      * @var string|null Location error code
      * @see AssetLocationValidator::validateAttribute()
      */
-    public $locationError;
+    public ?string $locationError;
 
     /**
      * @var string|null New filename
      */
-    public $newFilename;
+    public ?string $newFilename;
 
     /**
      * @var int|null New folder id
      */
-    public $newFolderId;
+    public ?int $newFolderId;
 
     /**
      * @var string|null The temp file path
      */
-    public $tempFilePath;
+    public ?string $tempFilePath;
 
     /**
      * @var bool Whether Asset should avoid filename conflicts when saved.
      */
-    public $avoidFilenameConflicts = false;
+    public bool $avoidFilenameConflicts = false;
 
     /**
      * @var string|null The suggested filename in case of a conflict.
      */
-    public $suggestedFilename;
+    public ?string $suggestedFilename;
 
     /**
      * @var string|null The filename that was used that caused a conflict.
      */
-    public $conflictingFilename;
+    public ?string $conflictingFilename;
 
     /**
      * @var bool Whether the asset was deleted along with its volume
      * @see beforeDelete()
      */
-    public $deletedWithVolume = false;
+    public bool $deletedWithVolume = false;
 
     /**
      * @var bool Whether the associated file should be preserved if the asset record is deleted.
      * @see beforeDelete()
      * @see afterDelete()
      */
-    public $keepFileOnDelete = false;
+    public bool $keepFileOnDelete = false;
 
     /**
      * @var int|null Volume ID
      */
-    private $_volumeId;
+    private mixed $_volumeId;
 
     /**
      * @var int|float|null Width
      */
-    private $_width;
+    private int|null|float $_width;
 
     /**
      * @var int|float|null Height
      */
-    private $_height;
+    private int|null|float $_height;
 
     /**
      * @var array|null Focal point
      */
-    private $_focalPoint;
+    private ?array $_focalPoint;
 
     /**
      * @var AssetTransform|null
      */
-    private $_transform;
+    private mixed $_transform;
 
     /**
      * @var string
      */
-    private $_transformSource = '';
+    private string $_transformSource = '';
 
     /**
      * @var VolumeInterface|null
      */
-    private $_volume;
+    private ?VolumeInterface $_volume;
 
     /**
      * @var User|null
      */
-    private $_uploader;
+    private ?User $_uploader;
 
     /**
      * @var int|null
      */
-    private $_oldVolumeId;
+    private ?int $_oldVolumeId;
 
     /**
      * @inheritdoc
@@ -191,31 +191,42 @@ class Asset extends Element {
     {
         return ['volumes.' . $context->uid];
     }
-    
-    public function __construct($config = []) {
+
+    /**
+     * @param $config
+     */
+    /**
+     * @param array $config
+     */
+    public function __construct(array $config = []) {
         if($config != null) {
-            $this->dam_meta_key = (array_key_exists("dam_meta_key", $config)) ? $config["dam_meta_key"] : null ;
-            $this->dam_meta_value = (array_key_exists("dam_meta_value", $config)) ? $config["dam_meta_value"] : null;
+            $this->dam_meta_key = $config["dam_meta_key"] ?? null;
+            $this->dam_meta_value = $config["dam_meta_value"] ?? null;
             if(array_key_exists('damMetadata', $config)) {  
                 $this->damMetadata = $config['damMetadata'];
             }  
-            $this->id = (array_key_exists("id", $config)) ? $config["id"] : null;
-            $this->assetId = (array_key_exists("assetId", $config)) ? $config["assetId"] : null;
+            $this->id = $config["id"] ?? null;
+            $this->assetId = $config["assetId"] ?? null;
         }
 
         parent::__construct();
     }
 
-    public function setAsset($el) {
+    /**
+     * @param $el
+     * @return void
+     */
+    public function setAsset($el): void
+    {
         $this->element = $el;
     }
 
         /**
      * Sets the image width.
      *
-     * @param int|float|null $width the image width
+     * @param float|int|null $width the image width
      */
-    public function setWidth($width)
+    public function setWidth(float|int|null $width): void
     {
         $this->_width = $width;
     }
@@ -223,9 +234,9 @@ class Asset extends Element {
     /**
      * Sets the image height.
      *
-     * @param int|float|null $height the image height
+     * @param float|int|null $height the image height
      */
-    public function setHeight($height)
+    public function setHeight(float|int|null $height): void
     {
         $this->_height = $height;
     }
@@ -233,10 +244,10 @@ class Asset extends Element {
         /**
      * Returns the image width.
      *
-     * @param AssetTransform|string|array|null $transform A transform handle or configuration that should be applied to the image
+     * @param array|string|AssetTransform|null $transform A transform handle or configuration that should be applied to the image
      * @return int|float|null
      */
-    public function getWidth($transform = null)
+    public function getWidth(AssetTransform|array|string $transform = null): float|int|null
     {
         return $this->_dimensions($transform)[0];
     }
@@ -244,11 +255,11 @@ class Asset extends Element {
         /**
      * Returns the image height.
      *
-     * @param AssetTransform|string|array|null $transform A transform handle or configuration that should be applied to the image
+     * @param array|string|AssetTransform|null $transform A transform handle or configuration that should be applied to the image
      * @return int|float|null
      */
 
-    public function getHeight($transform = null)
+    public function getHeight(AssetTransform|array|string $transform = null): float|int|null
     {
         return $this->_dimensions($transform)[1];
     }
@@ -256,12 +267,12 @@ class Asset extends Element {
     /**
      * Returns the width and height of the image.
      *
-     * @param AssetTransform|string|array|null $transform
+     * @param array|string|AssetTransform|null $transform
      * @return array
      */
-    private function _dimensions($transform = null): array
+    private function _dimensions(AssetTransform|array|string $transform = null): array
     {
-        if(substr($asset->kind, 0, 3) != "ext") {
+        if(!str_starts_with($this->kind, "ext")) {
             return [null, null];
         }
 
@@ -274,11 +285,6 @@ class Asset extends Element {
 
         $transform = $transform ?? $this->_transform;
 
-        if ($transform === null || !Image::canManipulateAsImage($this->getExtension())) {
-            return [$this->_width, $this->_height];
-        }
-        $transform = Craft::$app->getAssetTransforms()->normalizeTransform($transform);
-
         [$width, $height] = Image::calculateMissingDimension($transform->width, $transform->height, $this->_width, $this->_height);
 
         return [$width, $height];
@@ -290,11 +296,15 @@ class Asset extends Element {
      *
      * @return int|null
      */
-    public function getVolumeId()
+    public function getVolumeId(): ?int
     {
         return (int)$this->_volumeId ?: null;
     }
 
+    /**
+     * @param bool $isNew
+     * @return void
+     */
     public function afterSave(bool $isNew): void
     {
         if (!$this->propagating) {
@@ -320,7 +330,7 @@ class Asset extends Element {
                 $record->id = (int)$this->element->id;
              }
 
-            $damVol = \rosas\dam\Plugin::getInstance()->settings->damVolume;
+            $damVol = \lsst\dam\DamPlugin::getInstance()->settings->damVolume;
 
             $now = new DateTime();
 

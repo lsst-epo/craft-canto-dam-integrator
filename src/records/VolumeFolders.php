@@ -1,14 +1,21 @@
 <?php
 
-namespace rosas\dam\records;
+namespace lsst\dam\records;
 
 use Craft;
 use craft\db\Query;
 
+/**
+ *
+ */
 class VolumeFolders {
 
-
-    public static function getIdsByFolderName($folderName) {
+    /**
+     * @param $folderName
+     * @return array|bool|mixed
+     */
+    public static function getIdsByFolderName($folderName): mixed
+    {
         $query = new Query;
         return $query->select('id, parentId')
                     ->from('volumefolders')

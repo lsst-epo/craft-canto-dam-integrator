@@ -1,12 +1,16 @@
 <?php
 
-namespace rosas\dam\db;
+namespace lsst\dam\db;
 
 use Craft;
 use craft\db\ActiveRecord;
 use craft\helpers\Json;
+use yii\db\Exception;
 
-class AssetMetadata extends ActiveRecord{
+/**
+ *
+ */
+class AssetMetadata extends ActiveRecord {
     
     /**
      * @inheritdoc
@@ -17,9 +21,16 @@ class AssetMetadata extends ActiveRecord{
         return "{{universaldamintegrator_asset_metadata}}";
     }
 
-    public static function upsert($id, $assetMetadata) {
+    /**
+     * @param $id
+     * @param $assetMetadata
+     * @return void
+     * @throws Exception
+     */
+    public static function upsert($id, $assetMetadata): void
+    {
         $db = Craft::$app->getDb();
-        foreach(\rosas\dam\models\Constants::ASSET_METADATA_FIELDS as $key => $value) {
+        foreach(\lsst\dam\models\Constants::ASSET_METADATA_FIELDS as $key => $value) {
             $metaVal = "";
             if(array_key_exists($value[0], $assetMetadata)) {
                 $metaVal = $assetMetadata[$value[0]];

@@ -1,57 +1,68 @@
 <?php
 
-namespace rosas\dam\fields;
+namespace lsst\dam\fields;
 
 use Craft;
 use craft\fields\Assets as AssetField;
 use craft\base\ElementInterface;
 use craft\helpers\Json;
-use rosas\dam\controllers\AssetSyncController;
-use rosas\dam\db\AssetMetadata;
-use rosas\dam\services\Assets as AssetService;
+use lsst\dam\db\AssetMetadata;
+use lsst\dam\services\Assets as AssetService;
 use craft\gql\arguments\elements\Asset as AssetArguments;
-use rosas\dam\gql\interfaces\DAMAssetInterface as AssetInterface;
-use rosas\dam\gql\resolvers\DAMAssetResolver as AssetResolver;
+use lsst\dam\gql\interfaces\DAMAssetInterface as AssetInterface;
+use lsst\dam\gql\resolvers\DAMAssetResolver as AssetResolver;
 use craft\helpers\Gql as GqlHelper;
 use craft\services\Gql as GqlService;
 use GraphQL\Type\Definition\Type;
-use craft\services\Sections;
 use craft\helpers\ElementHelper;
+use lsst\dam\elements\db\ContentQuery;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
 
-// DB access
-use rosas\dam\elements\db\ContentQuery;
-
+/**
+ *
+ *
+ * @property-read Type|array $contentGqlType
+ */
 class DAMAsset extends AssetField {
 
      /**
      * @inheritdoc
      */
-    protected string $settingsTemplate = 'universal-dam-integrator/dam-asset-settings';
+    protected string $settingsTemplate = 'canto-dam-integrator/dam-asset-settings';
 
     /**
      * @inheritdoc
      */
-    protected string $inputTemplate = 'universal-dam-integrator/dam-asset';
+    protected string $inputTemplate = 'canto-dam-integrator/dam-asset';
 
     /**
      * @inheritdoc
      */
     protected ?string $inputJsClass = 'Craft.DamAssetSelectInput';
 
-    public function __construct(array $config = []) {
-        parent::__construct($config);
-    }
-
+    /**
+     * @return string
+     */
     public static function displayName(): string {
         return Craft::t('app', 'DAMAsset');
     }
 
+    /**
+     * @return bool
+     */
     public static function hasContentColumn(): bool {
         return true; // Extended class sets this to false
     }
 
     // Pulled from \craft\fields\Assets
-    public function getContentGqlType(): \GraphQL\Type\Definition\Type|array {
+
+    /**
+     * @return Type|array
+     */
+    public function getContentGqlType(): Type|array {
         return [
             'name' => $this->handle,
             'type' => Type::nonNull(Type::listOf(AssetInterface::getType())),
@@ -61,6 +72,15 @@ class DAMAsset extends AssetField {
         ];
     }
 
+    /**
+     * @param mixed $value
+     * @param ElementInterface|null $element
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
+     */
     public function getInputHtml(mixed $value, ?\craft\base\ElementInterface $element = null): string {
         // Get our id and namespace
         $id = Craft::$app->getView()->formatInputId($this->handle);
@@ -106,15 +126,31 @@ class DAMAsset extends AssetField {
         return Craft::$app->getView()->renderTemplate($this->inputTemplate, $templateVals);
     }
 
-    public static function getDamAssetId($elementId) {
+    /**
+     * @param $elementId
+     * @return array
+     */
+    /**
+     * @param $elementId
+     * @return array
+     */
+    public static function getDamAssetId($elementId): array
+    {
         $field = Craft::$app->fields->getFieldByHandle("damAsset");
 	    $col_name = ElementHelper::fieldColumnFromField($field);
-        $damAssetId = ContentQuery::getDamAssetIdByElementId($elementId, $col_name);
-
-        return $damAssetId;
+        return ContentQuery::getDamAssetIdByElementId($elementId, $col_name);
     }
 
-    public static function getAssetMetadataByAssetId($assetId) {
+    /**
+     * @param $assetId
+     * @return array
+     */
+    /**
+     * @param $assetId
+     * @return array
+     */
+    public static function getAssetMetadataByAssetId($assetId): array
+    {
         $rows = AssetMetadata::find()
                                 ->where(['"assetId"' => $assetId])
                                 ->all();

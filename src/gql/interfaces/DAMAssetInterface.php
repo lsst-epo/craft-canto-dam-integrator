@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam\gql\interfaces;
+namespace lsst\dam\gql\interfaces;
 
 use Craft;
 use GraphQL\Type\Definition\Type;
@@ -8,13 +8,12 @@ use craft\gql\interfaces\elements\Asset as AssetInterface;
 use craft\gql\TypeManager;
 use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\InterfaceType;
-use craft\gql\types\generators\AssetType;
-use craft\helpers\Json;
+use lsst\dam\gql\types\generators\DAMAssetGenerator;
+use lsst\dam\models\Metadata;
 
-use rosas\dam\gql\types\generators\DAMAssetGenerator;
-use rosas\dam\elements\Asset;
-use rosas\dam\models\Metadata;
-
+/**
+ *
+ */
 class DAMAssetInterface extends AssetInterface {
 
     /**

@@ -1,34 +1,36 @@
 <?php
 
-namespace rosas\dam\services;
+namespace lsst\dam\services;
 
 use Craft;
+use craft\errors\InvalidFieldException;
 use craft\services\Elements as ElementsService;
 use craft\base\Element;
-use rosas\dam\elements\Asset;
-use rosas\dam\db\AssetMetadata;
+use lsst\dam\elements\Asset;
+use lsst\dam\db\AssetMetadata;
 use craft\base\ElementInterface;
 use craft\helpers\ElementHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\ArrayHelper;
 use craft\records\Element as ElementRecord;
 use craft\helpers\Db;
-use craft\helpers\Json;
 use craft\helpers\DateTimeHelper;
 use craft\records\Element_SiteSettings as Element_SiteSettingsRecord;
-
 use craft\events\ElementEvent;
 use craft\helpers\Queue;
 use craft\queue\jobs\UpdateSearchIndex;
+use yii\base\Exception;
 
-
+/**
+ *
+ */
 class Elements extends ElementsService {
 
     /**
      * @var bool|null Whether we should be updating search indexes for elements if not told explicitly.
      * @since 3.1.2
      */
-    private $_updateSearchIndex;
+    private ?bool $_updateSearchIndex = false;
 
 
     // Saving Elements
@@ -79,10 +81,12 @@ class Elements extends ElementsService {
      * (this can only be disabled when updating an existing element)
      * @param bool|null $updateSearchIndex Whether to update the element search index for the element
      * (this will happen via a background job if this is a web request)
+     * @param null $assetMetadata
      * @return bool
-     * @throws ElementNotFoundException if $element has an invalid $id
      * @throws Exception if the $element doesn’t have any supported sites
+     * @throws InvalidFieldException
      * @throws \Throwable if reasons
+     * @throws \yii\db\Exception
      */
     public function saveElement(ElementInterface $element, bool $runValidation = true, bool $propagate = true, bool $updateSearchIndex = null, $assetMetadata = null): bool
     {
@@ -107,10 +111,12 @@ class Elements extends ElementsService {
      * @param bool $propagate Whether the element should be saved across all of its supported sites
      * @param bool|null $updateSearchIndex Whether to update the element search index for the element
      * (this will happen via a background job if this is a web request)
+     * @param null $assetMetadata
      * @return bool
-     * @throws ElementNotFoundException if $element has an invalid $id
-     * @throws UnsupportedSiteException if the element is being saved for a site it doesn’t support
+     * @throws Exception
+     * @throws InvalidFieldException
      * @throws \Throwable if reasons
+     * @throws \yii\db\Exception
      */
     private function _saveElementInternal(ElementInterface $element, bool $runValidation = true, bool $propagate = true, bool $updateSearchIndex = null, $assetMetadata = null): bool
     {
@@ -360,19 +366,19 @@ class Elements extends ElementsService {
             $assetAfterSaver->setAsset($element);
 
             $assetAfterSaver->afterSave($isNewElement);
-            $propagate = false; // Rosas - Disabling propagation for now
-
-            // Update the element across the other sites?
-            if ($propagate) {
-                $element->newSiteIds = [];
-
-                foreach ($supportedSites as $siteInfo) {
-                    // Skip the initial site
-                    if ($siteInfo['siteId'] != $element->siteId) {
-                        $this->_propagateElement($element, $siteInfo, $isNewElement ? false : null);
-                    }
-                }
-            }
+//            $propagate = false; // Rosas - Disabling propagation for now
+//
+//            // Update the element across the other sites?
+//            if ($propagate) {
+//                $element->newSiteIds = [];
+//
+//                foreach ($supportedSites as $siteInfo) {
+//                    // Skip the initial site
+//                    if ($siteInfo['siteId'] != $element->siteId) {
+//                        $this->_propagateElement($element, $siteInfo, $isNewElement ? false : null);
+//                    }
+//                }
+//            }
 
             // It's now fully saved and propagated
             if (
@@ -495,15 +501,16 @@ class Elements extends ElementsService {
         return true;
     }
 
-        /**
+    /**
      * Propagates an element to a different site
      *
      * @param ElementInterface $element
      * @param array $siteInfo
-     * @param ElementInterface|false|null $siteElement The element loaded for the propagated site
-     * @throws Exception if the element couldn't be propagated
+     * @param null $siteElement The element loaded for the propagated site
+     * @throws \Throwable
+     * @throws InvalidFieldException
      */
-    private function _propagateElement(ElementInterface $element, array $siteInfo, $siteElement = null)
+    private function _propagateElement(ElementInterface $element, array $siteInfo, $siteElement = null): void
     {
         // Try to fetch the element in this site
         if ($siteElement === null && $element->id) {

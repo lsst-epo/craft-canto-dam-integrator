@@ -1,6 +1,6 @@
 <?php
 
-namespace rosas\dam\models;
+namespace lsst\dam\models;
 
 use Craft;
 use craft\gql\base\ObjectType;
@@ -8,11 +8,14 @@ use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\Type;
 use craft\gql\TypeManager;
 
+/**
+ *
+ */
 class Metadata extends ObjectType {
 
-    public $metadataKey;
+    public string $metadataKey;
 
-    public $metadataValue;
+    public string $metadataValue;
 
     public $description = "Key/value metadata for a DAM asset";
 
