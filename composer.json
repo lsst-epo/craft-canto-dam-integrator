@@ -1,6 +1,6 @@
 {
-    "name": "rosas/universal-dam-integrator",
-    "description": "This plugin is intended to be vendor agnostic, but with enough customizability to work across a broad range of vendors.",
+    "name": "lsst/canto-dam-integrator",
+    "description": "This plugin is intended to be used with the Canto Digital Asset Management (DAM) web system.",
     "type": "craft-plugin",
     "keywords": ["dam", "digital", "asset", "manager"],
     "license": "MIT",
@@ -8,26 +8,26 @@
     "authors": [
       {
         "name": "Eric Rosas",
-        "homepage": "https://github.com/lsst-epo/craft3-universal-dam-integrator"
+        "homepage": "https://github.com/lsst-epo/craft-canto-dam-integrator"
       }
     ],
     "support": {
       "email": "erosas@lsst.org",
-      "issues": "https://github.com/lsst-epo/craft3-universal-dam-integrator/issues",
-      "source": "https://github.com/lsst-epo/craft3-universal-dam-integrator",
-      "docs": "https://github.com/lsst-epo/craft3-universal-dam-integrator/blob/main/README.md"
+      "issues": "https://github.com/lsst-epo/craft-canto-dam-integrator/issues",
+      "source": "https://github.com/lsst-epo/craft-canto-dam-integrator",
+      "docs": "https://github.com/lsst-epo/craft-canto-dam-integrator/blob/main/README.md"
     },
     "require": {
       "craftcms/cms": "^4.4.1"
     },
     "autoload": {
       "psr-4": {
-        "rosas\\dam\\": "src/"
+        "lsst\\dam\\": "src/"
       }
     },
     "extra": {
-      "name": "Universal DAM Integrator",
-      "handle": "universal-dam-integrator",
+      "name": "Canto DAM Integrator",
+      "handle": "canto-dam-integrator",
       "class": "lsst\\dam\\DamPlugin"
     },
 
