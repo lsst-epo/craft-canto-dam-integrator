@@ -5,8 +5,8 @@ namespace lsst\dam\gql\interfaces;
 use Craft;
 use GraphQL\Type\Definition\Type;
 use craft\gql\interfaces\elements\Asset as AssetInterface;
-use craft\gql\TypeManager;
 use craft\gql\GqlEntityRegistry;
+use craft\services\Gql;
 use GraphQL\Type\Definition\InterfaceType;
 use lsst\dam\gql\types\generators\DAMAssetGenerator;
 use lsst\dam\models\Metadata;
@@ -60,7 +60,7 @@ class DAMAssetInterface extends AssetInterface {
      */
     public static function getFieldDefinitions(): array
     {
-        return TypeManager::prepareFieldDefinitions(array_merge(parent::getFieldDefinitions(), self::getConditionalFields(), [
+        return Gql::prepareFieldDefinitions(array_merge(parent::getFieldDefinitions(), self::getConditionalFields(), [
             'dam_meta_key' => [
                 'name' => 'dam_meta_key',
                 'type' => Type::string(),
