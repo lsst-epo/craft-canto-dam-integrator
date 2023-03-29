@@ -1,20 +1,22 @@
 <?php
 
-namespace lsst\dam\gql\types\generators;
+namespace rosas\dam\gql\types\generators;
 
 use Craft;
-use lsst\dam\gql\interfaces\DAMAssetInterface;
-use lsst\dam\gql\types\DAMAssetType;
-use lsst\dam\elements\Asset as AssetElement;
+use rosas\dam\gql\interfaces\DAMAssetInterface;
+use rosas\dam\gql\types\DAMAssetType;
+
+use rosas\dam\elements\Asset as AssetElement;
+use craft\helpers\Gql as GqlHelper;
+
+use craft\gql\base\Generator;
 use craft\gql\base\GeneratorInterface;
+use craft\gql\base\SingleGeneratorInterface;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
 use craft\gql\TypeManager;
 use craft\gql\base\ObjectType;
 
-/**
- *
- */
 class DAMAssetGenerator implements GeneratorInterface
 {
     /**
@@ -47,8 +49,7 @@ class DAMAssetGenerator implements GeneratorInterface
     }
 
     /**
-     * @param $context
-     * @return string
+     * @inheritdoc
      */
     public static function getName($context = null): string
     {
@@ -56,8 +57,7 @@ class DAMAssetGenerator implements GeneratorInterface
     }
 
     /**
-     * @param $context
-     * @return ObjectType
+     * @inheritdoc
      */
     public static function generateType($context): ObjectType
     {

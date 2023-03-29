@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2022 Eric Rosas
  */
 
-namespace lsst\dam\records;
+namespace rosas\dam\records;
 
 use Craft;
 use craft\db\ActiveRecord;
@@ -46,7 +46,7 @@ class DamMetadataRecords extends ActiveRecord
      *
      * @return string the table name
      */
-    public static function tableName(): string
+    public static function tableName()
     {
         return '{{%universaldamintegrator_asset_metadata}}';
     }

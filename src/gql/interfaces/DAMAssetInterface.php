@@ -1,19 +1,20 @@
 <?php
 
-namespace lsst\dam\gql\interfaces;
+namespace rosas\dam\gql\interfaces;
 
 use Craft;
 use GraphQL\Type\Definition\Type;
 use craft\gql\interfaces\elements\Asset as AssetInterface;
+use craft\gql\TypeManager;
 use craft\gql\GqlEntityRegistry;
-use craft\services\Gql;
 use GraphQL\Type\Definition\InterfaceType;
-use lsst\dam\gql\types\generators\DAMAssetGenerator;
-use lsst\dam\models\Metadata;
+use craft\gql\types\generators\AssetType;
+use craft\helpers\Json;
 
-/**
- *
- */
+use rosas\dam\gql\types\generators\DAMAssetGenerator;
+use rosas\dam\elements\Asset;
+use rosas\dam\models\Metadata;
+
 class DAMAssetInterface extends AssetInterface {
 
     /**
@@ -21,11 +22,12 @@ class DAMAssetInterface extends AssetInterface {
      */
     public static function getType($fields = null): Type
     {
-        if ($type = GqlEntityRegistry::getEntity(self::class)) {
+        $name = "DAMAssetInterface";
+        if ($type = GqlEntityRegistry::getEntity($name)) {
             return $type;
         }
 
-        $type = GqlEntityRegistry::createEntity(self::class, new InterfaceType([
+        $type = GqlEntityRegistry::createEntity($name, new InterfaceType([
             'name' => static::getName(),
             'fields' => self::class . '::getFieldDefinitions',
             'description' => 'This is the interface implemented by all DAM assets.',
@@ -60,7 +62,7 @@ class DAMAssetInterface extends AssetInterface {
      */
     public static function getFieldDefinitions(): array
     {
-        return Gql::prepareFieldDefinitions(array_merge(parent::getFieldDefinitions(), self::getConditionalFields(), [
+        return TypeManager::prepareFieldDefinitions(array_merge(parent::getFieldDefinitions(), self::getConditionalFields(), [
             'dam_meta_key' => [
                 'name' => 'dam_meta_key',
                 'type' => Type::string(),

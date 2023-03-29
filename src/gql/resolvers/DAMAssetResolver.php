@@ -1,18 +1,16 @@
 <?php
 
-namespace lsst\dam\gql\resolvers;
+namespace rosas\dam\gql\resolvers;
 
 use Craft;
-use lsst\dam\db\AssetMetadata;
+use rosas\dam\db\AssetMetadata;
 use craft\elements\db\ElementQuery;
 use craft\gql\resolvers\elements\Asset as AssetResolver;
-use lsst\dam\elements\Asset as AssetElement;
+use rosas\dam\elements\Asset as AssetElement;
+use rosas\dam\elements\db\DAMAssetQuery;
 use GraphQL\Type\Definition\ResolveInfo;
 use craft\helpers\Gql as GqlHelper;
 
-/**
- *
- */
 class DAMAssetResolver extends AssetResolver {
 
     /**

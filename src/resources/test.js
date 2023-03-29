@@ -114,7 +114,7 @@ function replaceCantoTagByImage(id, assetArray){
             success:function(data){
                 tokenInfo.tenant = data;
                 console.log("in test.js loading UC!");
-                $("#cantoUCFrame").attr("src", "/admin/canto-dam-integrator/cantoContent.html");
+                $("#cantoUCFrame").attr("src", "/admin/universal-dam-integrator/cantoContent.html");
             },
             error: function(request) {
                 alert("Get tenant error");

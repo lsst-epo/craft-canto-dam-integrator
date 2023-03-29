@@ -1,13 +1,10 @@
 <?php
 
-namespace lsst\dam\models;
+namespace rosas\dam\models;
 
-/**
- *
- */
 class Constants {
 
-    public const ASSET_METADATA_FIELDS = [
+    const ASSET_METADATA_FIELDS = [
         "filename" => ["name"],
         "tags" => ["tag"],
         "altText" => ["additional", "Alt Text **EN**"],

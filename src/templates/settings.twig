@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 
-<h1>Canto DAM Integrator</h1>
+<h1>Universal DAM Integrator</h1>
 <h2>Settings</h2>
 
 <p class="notice with-icon">All of the below fields can be set with environment variables, just ensure they are preceded with a '$', e.g.: "$DAM_APP_ID"</p>
@@ -50,4 +50,23 @@
     }}
 </div>
 
+{# <br> #}
+{# <h3>Mass Synchronization</h3> #}
+
+{# <form id="craftid-dam-mass-sync" method="post"> #}
+    {# {{ csrfInput() }} #}
+    {# {{ actionInput('universal-dam-integrator/mass-sync') }} #}
+    {# <div class="ssl-status light" title="{{ craft.app.request.isSecureConnection ? "Your connection is secure"|t('app') : "Your connection is insecure"|t('app') }}" aria-label="{{ craft.app.request.isSecureConnection ? "Your connection is secure"|t('app') : "Your connection is insecure"|t('app') }}">
+        <i class="{{ craft.app.request.isSecureConnection ? "secure" : "insecure" }} icon"></i>
+    </div> #}
+    {# {{ forms.textareaField({
+             label: 'List of DAM IDs',
+             id: 'damIds',
+             class: 'nicetext',
+             name: 'damIds',
+             value: 'damIds',
+             placeholder: "Copy/paste the list of DAM IDs separated by a line break"
+     }) }} #}
+    {# <a onclick="document.getElementById('craftid-dam-mass-sync').submit();">{{ 'Synchronize'}}</a>
+</form> #}
 

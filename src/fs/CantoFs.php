@@ -1,6 +1,6 @@
 <?php
 
-namespace lsst\dam\fs;
+namespace rosas\dam\fs;
 
 use Craft;
 use \Datetime;
@@ -8,10 +8,15 @@ use craft\base\Fs;
 use craft\models\FsListing;
 use Generator;
 
-/**
- *
- */
 class CantoFs extends Fs {
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct($config = [])
+    {
+        parent::__construct($config);
+    }
 
     /**
      * @inheritdoc
@@ -76,9 +81,7 @@ class CantoFs extends Fs {
     }
 
     /**
-     * @param string $uriPath
-     * @param string $targetPath
-     * @return int
+     * @inheritdoc
      */
     public function saveFileLocally(string $uriPath, string $targetPath): int
     {

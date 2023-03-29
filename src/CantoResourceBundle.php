@@ -1,22 +1,16 @@
 <?php
 
-namespace lsst\dam\web;
+namespace rosas\dam;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-/**
- *
- */
 class CantoResourceBundle extends AssetBundle
 {
-    /**
-     * @return void
-     */
-    public function init(): void
+    public function init()
     {
         // define the path that your publishable resources live
-        $this->sourcePath = '@lsst/dam/resources';
+        $this->sourcePath = '@rosas/dam/resources';
 
         // define the dependencies
         $this->depends = [

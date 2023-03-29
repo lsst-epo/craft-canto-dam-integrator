@@ -1,20 +1,18 @@
 <?php 
 
-namespace lsst\dam\tests;
+namespace rosas\dam\tests;
 
 use Craft;
 use Codeception\Test\Unit;
-use lsst\dam\elements\Asset;
+use UnitTester;
+use rosas\dam\elements\Asset;
 
-/**
- *
- */
 class AssetElementTest extends Unit
 {
     /**
      * @var \UnitTester
      */
-    protected \UnitTester $tester;
+    protected $tester;
     
     protected function _before()
     {

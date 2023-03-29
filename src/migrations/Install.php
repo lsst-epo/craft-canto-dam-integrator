@@ -1,8 +1,9 @@
 <?php
 
-namespace lsst\dam\migrations;
+namespace rosas\dam\migrations;
 
 use Craft;
+use craft\config\DbConfig;
 use craft\db\Migration;
 
 /**
@@ -24,7 +25,7 @@ class Install extends Migration
     /**
      * @var string The database driver to use
      */
-    public string $driver;
+    public $driver;
 
     // Public Methods
     // =========================================================================
@@ -39,7 +40,7 @@ class Install extends Migration
      * @return boolean return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
-    public function safeUp(): bool
+    public function safeUp()
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
@@ -62,7 +63,7 @@ class Install extends Migration
      * @return boolean return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
-    public function safeDown(): bool
+    public function safeDown()
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         $this->removeTables();
@@ -78,10 +79,11 @@ class Install extends Migration
      *
      * @return bool
      */
-    protected function createTables(): bool
+    protected function createTables()
     {
         $tablesCreated = false;
 
+    // universaldamintegrator_universaldamintegrator table
         $tableSchema = Craft::$app->db->schema->getTableSchema('{{%universaldamintegrator_asset_metadata}}');
         if ($tableSchema === null) {
             $tablesCreated = true;
@@ -108,8 +110,9 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function createIndexes(): void
+    protected function createIndexes()
     {
+    // universaldamintegrator_universaldamintegrator table
         $this->createIndex(
             $this->db->getIndexName(
                 '{{%universaldamintegrator_asset_metadata}}',
@@ -120,6 +123,13 @@ class Install extends Migration
             'assetId',
             false
         );
+        // Additional commands depending on the db driver
+        switch ($this->driver) {
+            case DbConfig::DRIVER_MYSQL:
+                break;
+            case DbConfig::DRIVER_PGSQL:
+                break;
+        }
     }
 
     /**
@@ -127,8 +137,9 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function addForeignKeys(): void
+    protected function addForeignKeys()
     {
+    // universaldamintegrator_universaldamintegrator table
         $this->addForeignKey(
             $this->db->getForeignKeyName('{{%universaldamintegrator_asset_metadata}}', 'siteId'),
             '{{%universaldamintegrator_asset_metadata}}',
@@ -145,8 +156,9 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function removeTables(): void
+    protected function removeTables()
     {
+    // universaldamintegrator_universaldamintegrator table
         $this->dropTableIfExists('{{%universaldamintegrator_asset_metadata}}');
     }
 }
