@@ -16,3 +16,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tech debt clean-up:
   - PhpStorm-isms for method/class annotations
   - Miscellaneous tech debt clean-up
+  - Changed return type of exception logic in Assets service to string
+  - Changed logging to Craft::warn() for stdout
