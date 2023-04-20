@@ -21,11 +21,12 @@ class DAMAssetInterface extends AssetInterface {
      */
     public static function getType($fields = null): Type
     {
-        if ($type = GqlEntityRegistry::getEntity(self::class)) {
+        $name = "DAMAssetInterface";
+        if ($type = GqlEntityRegistry::getEntity($name)) {
             return $type;
         }
 
-        $type = GqlEntityRegistry::createEntity(self::class, new InterfaceType([
+        $type = GqlEntityRegistry::createEntity($name, new InterfaceType([
             'name' => static::getName(),
             'fields' => self::class . '::getFieldDefinitions',
             'description' => 'This is the interface implemented by all DAM assets.',
