@@ -19,11 +19,9 @@ class m230412_233209_namespace_change_migration extends Migration
         Craft::info("Inside of safeUp!!!!", "shavvy!");
 
         $this->update('{{%fields}}', [
-//            "type" => 'lsst\dam\fields\DAMAsset',
-            "type" => 'rosas\dam\fields\DAMAsset'
-    ],[
             "type" => 'lsst\dam\fields\DAMAsset',
-//            "type" => 'rosas\dam\fields\DAMAsset'
+    ],[
+            "type" => 'rosas\dam\fields\DAMAsset'
     ]);
 
         return true;
