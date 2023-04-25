@@ -291,11 +291,11 @@ class Assets extends Component
         
                 return $authToken;
             } else {
-                Craft::warn("An exception occurred in getAuthToken()", "UDAMI");
+                Craft::warning("An exception occurred in getAuthToken()", "UDAMI");
                 return 'An error occurred fetching auth token!';
             }
         } else {
-            Craft::warn("An exception occurred in getAuthToken()", "UDAMI");
+            Craft::warning("An exception occurred in getAuthToken()", "UDAMI");
             return 'DamPlugin is not configured to authenticate!';
         }
 

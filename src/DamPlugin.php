@@ -45,7 +45,7 @@ class DamPlugin extends Plugin
     public static Plugin $plugin;
 
     public bool $hasCpSettings = true;
-    public string $schemaVersion = "2.0.1";
+    public string $schemaVersion = "2.0.2";
 
     /**
      * @param $id
