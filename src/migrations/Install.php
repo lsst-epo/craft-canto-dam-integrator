@@ -49,6 +49,15 @@ class Install extends Migration
             Craft::$app->db->schema->refresh();
         }
 
+        // Perform migration as if this is a new plugin due to namespace changes
+        echo "Performing install-migration for Canto Integration Plugin";
+        $this->update('{{%fields}}', [
+            "type" => 'lsst\dam\fields\DAMAsset'
+        ],[
+            "type" => 'rosas\dam\fields\DAMAsset'
+          ]
+        );
+
         return true;
     }
 
