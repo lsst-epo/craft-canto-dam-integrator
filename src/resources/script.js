@@ -32,11 +32,11 @@ $("#fields-remove-dam-asset").click(function(e) {
     let assetId = e.target.dataset.asset;
     $.ajax({type:"POST",
         url: "/canto-dam-integrator/dam-asset-removal",
-        dataType:"json", 
-        data:{ 
+        dataType:"json",
+        data:{
             "elementId": elementId,
-	        "fieldId": fieldId	
-        }, 
+	        "fieldId": fieldId
+        },
         success:function(data){
             let res = JSON.parse(data);
             if(res.status == "success") {
@@ -54,8 +54,8 @@ $("#fields-remove-dam-asset").click(function(e) {
             alert("An error occurred while attempting to remove the image, please try again later.");
         }
     });
-}); 
-    
+});
+
 $("#fields-rosas-clicker").click(function(e) {
     $modal.show();
     let fieldId = e.target.dataset.field;
@@ -102,7 +102,7 @@ cantoUC = $.fn[pluginName] = $[pluginName] = function (options, callback) {
     addEventListener();
     initCantoTag();
 
-    window.onmessage = function(event){
+    window.addEventListener("message", (event) => {
         let data = event.data;
         if(data && data.type == "getTokenInfo"){
             let receiver = document.getElementById('cantoUCFrame').contentWindow;
@@ -124,27 +124,26 @@ cantoUC = $.fn[pluginName] = $[pluginName] = function (options, callback) {
             verifyCode = data;
             // var cantoContentPage = "https://s3-us-west-2.amazonaws.com/static.dmc/universal/cantoContent.html";
             getTokenByVerifycode(verifyCode);
-            
-        }
 
-    };
+        }
+    });
 };
 
 function getTokenByVerifycode(verifyCode) {
     $.ajax({type:"POST",
-        url: "https://oauth.canto.com/oauth/api/oauth2/universal2/token", 
-        dataType:"json", 
-        data:{ 
+        url: "https://oauth.canto.com/oauth/api/oauth2/universal2/token",
+        dataType:"json",
+        data:{
             "app_id": appId,
             "grant_type": "authorization_code",
             "redirect_uri": "http://localhost:8080",
             "code": verifyCode,
             "code_verifier": timeStamp
-        }, 
+        },
         success:function(data){
             tokenInfo = data;
             getTenant(tokenInfo);
-            
+
         },
         error: function(request) {
             alert("Get token error");
@@ -153,7 +152,7 @@ function getTokenByVerifycode(verifyCode) {
 }
 function getTenant(tokenInfo) {
     $.ajax({type:"GET",
-        url: "https://oauth.canto.com:443/oauth/api/oauth2/tenant/" + tokenInfo.refreshToken, 
+        url: "https://oauth.canto.com:443/oauth/api/oauth2/tenant/" + tokenInfo.refreshToken,
         success:function(data){
             tokenInfo.tenant = data;
             var cantoContentPage = "./cantoAssets/cantoContent.html";

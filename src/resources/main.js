@@ -271,7 +271,7 @@ $(document).ready(function(){
     addEventListener();
     getTokenInfo();
 
-    window.onmessage=function(event){
+    window.addEventListener("message", (event) => {
         let tokenInfo = event.data;
 
         if(tokenInfo && tokenInfo.accessToken && tokenInfo.accessToken.length >0) {
@@ -285,7 +285,7 @@ $(document).ready(function(){
         let initSchme = $("#cantoViewBody").find(".type-font.current").data("type");
         $("#cantoViewBody").find("#globalSearch input").val("");
         getImageInit(initSchme);
-    };
+    });
 });
 
 function getTokenInfo(){
