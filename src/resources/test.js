@@ -53,7 +53,7 @@ function replaceCantoTagByImage(id, assetArray){
         settings(options);
         callback = callback;
 
-        window.onmessage=function(event){
+        window.addEventListener("message", (event) => {
             var data = event.data;
             if(data && data.type == "getTokenInfo"){
                 var receiver = document.getElementById('cantoUCFrame').contentWindow;
@@ -80,7 +80,7 @@ function replaceCantoTagByImage(id, assetArray){
                 
             }
 
-        };
+        });
     };
     function settings(options){
         env = options.env;

@@ -102,7 +102,7 @@ cantoUC = $.fn[pluginName] = $[pluginName] = function (options, callback) {
     addEventListener();
     initCantoTag();
 
-    window.onmessage = function(event){
+    window.addEventListener("message", (event) => {
         let data = event.data;
         if(data && data.type == "getTokenInfo"){
             let receiver = document.getElementById('cantoUCFrame').contentWindow;
@@ -127,7 +127,7 @@ cantoUC = $.fn[pluginName] = $[pluginName] = function (options, callback) {
             
         }
 
-    };
+    });
 };
 
 function getTokenByVerifycode(verifyCode) {

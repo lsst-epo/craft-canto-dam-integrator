@@ -299,7 +299,7 @@ $(document).ready(function(){
     getTokenInfo();
 
 
-    window.onmessage=function(event){
+    window.addEventListener("message", (event) => {
         var data = event.data;
         tokenInfo = data;
         if(tokenInfo && tokenInfo.accessToken && tokenInfo.accessToken.length >0)
@@ -311,7 +311,7 @@ $(document).ready(function(){
         self.find("#globalSearch input").val("");
         getImageInit(initSchme);
         }
-    };
+    });
 });
 
 function getTokenInfo(){
