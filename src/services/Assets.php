@@ -154,7 +154,13 @@ class Assets extends Component
         $newAsset->propagateAll = false; //changed from true for debugging purposes
         $newAsset->dateModified = new DateTime();
         $elementService = new Elements();
-        $success = $elementService->saveElement($newAsset, false, true, true, $this->assetMetadata);
+        $success = $elementService->saveElement($newAsset,
+                                    false,
+                                      true,
+                               true,
+                                                false,
+                                                false,
+                                                $this->assetMetadata);
 
         if($success) {
             return [

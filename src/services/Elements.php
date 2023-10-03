@@ -84,7 +84,13 @@ class Elements extends ElementsService {
      * @throws Exception if the $element doesn’t have any supported sites
      * @throws \Throwable if reasons
      */
-    public function saveElement(ElementInterface $element, bool $runValidation = true, bool $propagate = true, bool $updateSearchIndex = null, $assetMetadata = null): bool
+    public function saveElement(ElementInterface $element,
+                                bool $runValidation = true,
+                                bool $propagate = true,
+                                bool $updateSearchIndex = null,
+                                bool $forceTouch = false,
+                                ?bool $crossSiteValidate = false,
+                                $assetMetadata = null): bool
     {
         // Force propagation for new elements
         $propagate = !$element->id || $propagate;
@@ -93,7 +99,14 @@ class Elements extends ElementsService {
         $duplicateOf = $element->duplicateOf;
         $element->duplicateOf = null;
 
-        $success = $this->_saveElementInternal($element, $runValidation, $propagate, $updateSearchIndex, $assetMetadata);
+        $success = $this->_saveElementInternal( $element,
+                                                $runValidation,
+                                                $propagate,
+                                                $updateSearchIndex,
+                                                null,
+                                                $forceTouch,
+                                                $crossSiteValidate,
+                                                $assetMetadata);
 
         $element->duplicateOf = $duplicateOf;
         return $success;
@@ -112,7 +125,14 @@ class Elements extends ElementsService {
      * @throws UnsupportedSiteException if the element is being saved for a site it doesn’t support
      * @throws \Throwable if reasons
      */
-    private function _saveElementInternal(ElementInterface $element, bool $runValidation = true, bool $propagate = true, bool $updateSearchIndex = null, $assetMetadata = null): bool
+    private function _saveElementInternal(ElementInterface $element,
+                                          bool $runValidation = true,
+                                          bool $propagate = true,
+                                          bool $updateSearchIndex = null,
+                                          ?array $supportedSites = null,
+                                          bool $forceTouch = false,
+                                          bool $crossSiteValidate = false,
+                                          $assetMetadata = null): bool
     {
         /** @var ElementInterface|DraftBehavior|RevisionBehavior $element */
         $isNewElement = !$element->id;
@@ -582,7 +602,9 @@ class Elements extends ElementsService {
         $savePropAssets->setAsset($siteElement);
         
 
-        if ($this->_saveElementInternal($savePropAssets, true, false) === false) {
+        if ($this->_saveElementInternal($savePropAssets,
+                            true,
+                              false) === false) {
             // Log the errors
             $error = 'Couldn’t propagate element to other site due to validation errors:';
             foreach ($siteElement->getFirstErrors() as $attributeError) {
